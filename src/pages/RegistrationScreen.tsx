@@ -1,7 +1,12 @@
-import { useFormik } from "formik";
+import { Formik } from "formik";
 import React from "react";
-import { Button, Text, View } from "react-native";
+import { StyleSheet, Button, Text, View, TextInput } from "react-native";
 import { Errors } from "../interfaces/errors.interface";
+import * as Yup from 'yup';
+import BootstrapStyleSheet from 'react-native-bootstrap-styles';
+
+const bootstrapStyleSheet = new BootstrapStyleSheet();
+const { s, c } = bootstrapStyleSheet;
 
 export default function RegistrationScreen({ navigation }) {
   const validate = values => {
@@ -34,64 +39,66 @@ export default function RegistrationScreen({ navigation }) {
   
     return errors;
   };  
-
-  const formik = useFormik({
-    initialValues: {
-      firstName: '',
-      lastName: '',
-      userName: '',
-      password: '',
-    },
-    validate,
-    onSubmit: values => {
-      alert(JSON.stringify(values, null, 2));
-    },
-  });
   return (
-    <form onSubmit={formik.handleSubmit}>
-      <label htmlFor="firstName">First Name:</label>
-      <input
-        id="firstName"
-        name="firstName"
-        onChange={formik.handleChange}
-        onBlur={formik.handleBlur}
-        value={formik.values.firstName}
-      />
-      {formik.touched.firstName && formik.errors.firstName ? <div>{formik.errors.firstName}</div> : null}
-
-      <label htmlFor="firstName">First Name:</label>
-      <input
-        id="lastName"
-        name="lastName"
-        onChange={formik.handleChange}
-        onBlur={formik.handleBlur}
-        value={formik.values.lastName}
-      />
-      {formik.touched.lastName && formik.errors.lastName ? <div>{formik.errors.lastName}</div> : null}
-
-      <label htmlFor="userName">Username:</label>
-      <input
-        id="userName"
-        name="userName"
-        type="email"
-        onChange={formik.handleChange}
-        onBlur={formik.handleBlur}
-        value={formik.values.userName}
-      />
-      {formik.touched.userName && formik.errors.userName ? <div>{formik.errors.userName}</div> : null}
-
-      <label htmlFor="password">Password:</label>
-      <input
-        id="password"
-        name="password"
-        type="password"
-        onChange={formik.handleChange}
-        onBlur={formik.handleBlur}
-        value={formik.values.password}
-      />
-      {formik.touched.password && formik.errors.firstName ? <div>{formik.errors.password}</div> : null}
-
-      <button type="submit">Submit</button>
-    </form>
+    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+      <Text>Please Fill Out The Following:</Text>
+      <Formik 
+        initialValues={{
+          firstName: '',
+          lastName: '',
+          userName: '',
+          password: '',
+        }}
+        validationSchema={Yup.object({
+          firstName: Yup.string().trim()
+            .min(1, 'Must be a non-empty value')
+            .required('Required'),
+          lastName: Yup.string().trim()
+            .max(1, 'Must be non-empty value')
+            .required('Required'),
+          email: Yup.string().email('Invalid email address').required('Required'),
+          password: Yup.string().trim()
+            .max(1, 'Must be non-empty value')
+            .required('Required'),
+        })}
+        onSubmit={(values, { setSubmitting }) => {
+          console.log(JSON.stringify(values, null, 2));
+          setTimeout(() => {
+            console.log(JSON.stringify(values, null, 2));
+            setSubmitting(false);
+          }, 400);
+        }}
+      >
+        {(props) => (
+        <View>    
+          <TextInput style={[s.text]}
+            placeholder='First Name'
+            onChangeText={props.handleChange('firstName')}
+            onBlur={props.handleBlur('firstName')}
+            value={props.values.firstName}
+         />
+         <TextInput style={[s.text]}
+            placeholder='Last Name'
+            onChangeText={props.handleChange('lastName')}
+            onBlur={props.handleBlur('lastName')}
+            value={props.values.lastName}
+         />
+         <TextInput style={[s.text]}
+            placeholder='Username'
+            onChangeText={props.handleChange('userName')}
+            onBlur={props.handleBlur('userName')}
+            value={props.values.userName}
+         />
+         <TextInput style={[s.text]}
+            placeholder='Password'
+            onChangeText={props.handleChange('password')}
+            onBlur={props.handleBlur('password')}
+            value={props.values.password}
+         />
+          <Button title='Submit' onPress={() => console.log(props.handleSubmit())}/>
+        </View>
+        )}
+      </Formik>
+    </View>
   );
 }
