@@ -27,6 +27,8 @@
     },
     "web": {
       "favicon": "./assets/favicon.png"
-    }
+    },
+    "description": "Feeling good. Lik i should",
+    "githubUrl": "https://github.com/stevemcorry/feel-good-inc.git"
   }
 }

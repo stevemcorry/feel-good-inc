@@ -6,15 +6,40 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import MainPages from './src/layouts/MainPages';
 
+import Fire from './environment.config';
 
 
-function DetailsScreen({ navigation }) {
+function login(navigation){
+  Fire.auth().signInAnonymously().then((res)=>{
+    console.log(res,'logged in?')
+    navigation.navigate('Home')
+  }).catch((err)=>{
+    console.log('nope ',err)
+  })
+}
+function logout(){
+  Fire.auth().signOut().then((res)=>{
+    console.log(res,'Logged out')
+  }).catch((err)=>{
+    console.log('didt log out ',err)
+  })
+}
+function getData(){
+
+}
+
+function LoginScreen({ navigation }) {
   return (
     <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+
       <Text>Details Screen</Text>
       <Button
-        title="Go to Home"
-        onPress={() => navigation.navigate('Home')}
+        title="Login"
+        onPress={() => login(navigation)}
+      />
+      <Button
+        title="Logout"
+        onPress={() => logout()}
       />
     </View>
   );
@@ -27,7 +52,7 @@ export default function App() {
     <NavigationContainer>
       <Stack.Navigator>
         <Stack.Screen name="Home" component={MainPages} />
-        <Stack.Screen name="Details" component={DetailsScreen} />
+        <Stack.Screen name="Details" component={LoginScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   );
