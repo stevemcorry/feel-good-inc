@@ -9,31 +9,40 @@ function addTag(tag:string){
     let ref = Fire.database().ref("/users/" + uid + "/tags").push(tag)
 }
 
-export default function AddTagsScreen(){
+class AddTagsScreen extends React.Component{
 
-    const [text, onChangeText] = useState("");
-    const [tagData, changeTagData] = useState({});
-    const [tags, setTags] = useState(<View><Text>Loading..</Text></View>);
-    let arr:Array<[]> =[];
-    const [activeChildren, setActiveChildren] = useState(arr);
+    state = {
+        text: "",
+        tagData: {},
+        tags: <Text>Loading..</Text>,
+        activeChildren: []
+    }
 
-    useEffect(() => {
+    componentDidMount() {
+        console.log('loading')
+        this.getData();
+    }
+
+    getData(){
         let uid = "ajsdkfla;jsdflka"
         let ref = Fire.database().ref("/users/" + uid + "/tags");
         ref.on("value", snapshot => {
             const data = snapshot.val();
             console.log('from use ', data)
             if(data){
-                changeTagData(data);
-                showTags();
+                this.setState({tagData: data});
+                this.showTags(data);
             } else {
                 console.log('No data');
             }
         });
-    }, [])
+    }
 
-    const showTags = () => {
-        let data = tagData;
+    showTags(data:any){
+        if(!data){
+            data = this.state.tagData;
+        }
+        console.log('data', this.state.tagData)
         if(Object.keys(data).length !== 0){
             console.log('inshow', data)
             let children:Array<any> = [];
@@ -42,43 +51,53 @@ export default function AddTagsScreen(){
                 children.push(value);
             });
             console.log(children)
-            setTags(getChildren(children));
+            this.setState({tags: this.getChildren(children)});
         }
     }
-    const addActiveTag = (key:any)=>{ 
-        let arr:Array<[]> = activeChildren;
+
+    addActiveTag(key:any){ 
+        let arr:Array<[]> = this.state.activeChildren;
         arr.push(key);
-        setActiveChildren(arr);
-        showTags();
-        console.log(key, activeChildren) 
+        this.setState({activeChildren: arr});
+        this.showTags("");
     }
-    const removeActiveTag = (key:string)=>{ 
-        console.log(key, activeChildren) 
+
+    removeActiveTag(key:any){ 
+        let arr:Array<[]> = this.state.activeChildren;
+        if(arr.indexOf(key) != -1){
+            arr.splice(arr.indexOf(key), 1);
+            this.setState({activeChildren: arr});
+        } 
+        this.showTags("");
     }
-    const getChildren = (data:Array<[]>) => {
+
+    getChildren(data:Array<[]>) {
         return <View style={styles.tagView}>{data.map((val, key:any)=>{
-            if(activeChildren.indexOf(key) != -1){
-                return <Pressable key={key} onPress={()=>{removeActiveTag(key)}} style={[styles.tagPill, styles.activePill]}><Text>{val}</Text></Pressable>
+            if(this.state.activeChildren.indexOf(key) != -1){
+                return <Pressable key={key} onPress={()=>{this.removeActiveTag(key)}} style={[styles.tagPill, styles.activePill]}><Text>{val}</Text></Pressable>
             } else{   
-                return <Pressable key={key} onPress={()=>{addActiveTag(key)}} style={styles.tagPill}><Text>{val}</Text></Pressable>
+                return <Pressable key={key} onPress={()=>{this.addActiveTag(key)}} style={styles.tagPill}><Text>{val}</Text></Pressable>
             }
         })}</View>
     }
     
-    return (
-        <View style={{ flex: 1, alignItems: 'center', marginTop: 30}}>
+    render() {
+
+        return (
+            <View style={{ flex: 1, alignItems: 'center', marginTop: 30}}>
             <Text style={styles.h1}>Add Tags</Text>
             <TextInput style={styles.input}
-                onChangeText={onChangeText}
-                value={text}
+                value={this.state.text}
                 placeholder="Tag Name"
-            />
-            <Button title="Save Tag" onPress={() => addTag(text)}/>
-            <Text>{tags}</Text>
+                />
+            <Button title="Save Tag" onPress={() => addTag(this.state.text)}/>
+            <Text>{this.state.tags}</Text>
         </View>
-    );
+        );
+    }
 }
 
+export default AddTagsScreen;
 
 const styles = StyleSheet.create({
     h1: {
