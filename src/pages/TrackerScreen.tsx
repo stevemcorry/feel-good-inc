@@ -34,44 +34,31 @@ class TrackerScreen extends React.Component{
 
   render(){
     return (
-      <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-        <Text style={{fontSize: 24, marginTop: 20}}>How did you feel today?</Text>
-        <View style={{ alignItems: 'center', justifyContent: 'center', flexDirection: "row" }}>
-            <AppButton
-                title="😁"
-                onPress={() => this.setMood(5)}
-            />
-            <AppButton
-                title="🙂"
-                onPress={() => this.setMood(4)}
-            />
-            <AppButton
-                title="😐"
-                onPress={() => this.setMood(4)}
-            />
-            <AppButton
-                title="😒"
-                onPress={() => this.setMood(3)}
-            />
-            <AppButton
-                title="😞"
-                onPress={() => this.setMood(2)}
-            />
-            <AppButton
-                title="☹️"
-                onPress={() => this.setMood(1)}
-            />
+      <View
+        style={{ flex: 1, alignItems: "center", justifyContent: "center" }}
+      >
+        <Text style={{ fontSize: 24, marginTop: 20 }}>
+          How did you feel today?
+        </Text>
+        <View
+          style={{
+            alignItems: "center",
+            justifyContent: "center",
+            flexDirection: "row",
+          }}
+        >
+          <AppButton title="😁" onPress={() => this.setMood(5)} />
+          <AppButton title="🙂" onPress={() => this.setMood(4)} />
+          <AppButton title="😐" onPress={() => this.setMood(4)} />
+          <AppButton title="😒" onPress={() => this.setMood(3)} />
+          <AppButton title="☹️" onPress={() => this.setMood(1)} />
         </View>
 
-        <AddTagsScreen setTags={this.handleCallback}></AddTagsScreen>
+        <AddTagsScreen setTags={this.handleCallback} />
 
-        <Button
-            title="Save Day"
-            onPress={() => this.sendObj()}
-          />
-
+        <Button title="Save Day" onPress={() => this.sendObj()} />
       </View>
-      );
+    );
     }
   }
 
