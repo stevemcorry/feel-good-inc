@@ -8,6 +8,7 @@ import MainPages from './src/layouts/MainPages';
 import TrackerScreen from './src/pages/TrackerScreen';
 
 import Fire from './environment.config';
+import AddTagsScreen from './src/pages/AddTagsScreen';
 
 
 function login(navigation){
@@ -55,6 +56,7 @@ export default function App() {
         <Stack.Screen name="Home" component={MainPages} />
         <Stack.Screen name="Details" component={LoginScreen} />
         <Stack.Screen name="Tracker" component={TrackerScreen} />
+        <Stack.Screen name="AddTags" component={AddTagsScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   );
