@@ -6,8 +6,8 @@ export default function ProfileScreen({ navigation }) {
       <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
         <Text>This is the profile screen nerds</Text>
         <Button
-          title="Go to details"
-          onPress={() => navigation.navigate('Details')}
+          title="Go to charts"
+          onPress={() => navigation.navigate('Charts')}
         />
         <Button
           title="Go to tracker"

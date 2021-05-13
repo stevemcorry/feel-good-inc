@@ -7,8 +7,6 @@ import ChartsScreen from '../pages/ChartsScreen';
 
 const Tab = createBottomTabNavigator();
 
-
-
 export default function MainPages({ navigation }) {
     return (
       <Tab.Navigator>
