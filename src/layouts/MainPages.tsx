@@ -7,15 +7,37 @@ import ChartsScreen from '../pages/ChartsScreen';
 
 const Tab = createBottomTabNavigator();
 
-
-
 export default function MainPages({ navigation }) {
     return (
-      <Tab.Navigator>
-        <Tab.Screen name="Home" component={HomeScreen} />
-        <Tab.Screen name="Charts" component={ChartsScreen} />
-        <Tab.Screen name="Profile" component={ProfileScreen} />
-        <Tab.Screen name="Tracker" component={TrackerScreen} />
+      <Tab.Navigator
+        tabBarOptions={{
+          labelStyle: {
+            fontSize: 16,
+            fontFamily: "NunitoBold",
+            margin: 15,
+          },
+        }}
+      >
+        <Tab.Screen
+          name="Home"
+          component={HomeScreen}
+          options={{ tabBarLabel: "Home" }}
+        />
+        <Tab.Screen
+          name="Charts"
+          component={ChartsScreen}
+          options={{ tabBarLabel: "Charts" }}
+        />
+        <Tab.Screen
+          name="Profile"
+          component={ProfileScreen}
+          options={{ tabBarLabel: "Profile" }}
+        />
+        <Tab.Screen
+          name="Tracker"
+          component={TrackerScreen}
+          options={{ tabBarLabel: "Tracker" }}
+        />
       </Tab.Navigator>
     );
   }
