@@ -49,8 +49,8 @@ class TrackerScreen extends React.Component{
         >
           <AppButton title="😁" onPress={() => this.setMood(5)} />
           <AppButton title="🙂" onPress={() => this.setMood(4)} />
-          <AppButton title="😐" onPress={() => this.setMood(4)} />
-          <AppButton title="😒" onPress={() => this.setMood(3)} />
+          <AppButton title="😐" onPress={() => this.setMood(3)} />
+          <AppButton title="😒" onPress={() => this.setMood(2)} />
           <AppButton title="☹️" onPress={() => this.setMood(1)} />
         </View>
 
