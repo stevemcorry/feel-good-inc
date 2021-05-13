@@ -10,7 +10,7 @@ export default function RegistrationScreen({ navigation }) {
     <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
        <Text>Please Fill Out The Following:</Text>
        <View>
-        <RegistrationForm />
+        <RegistrationForm navigation={navigation}/>
        </View>
     </View>
   );
