@@ -1,11 +1,11 @@
 import React from 'react';
 import Fire from '../../environment.config';
-import { StyleSheet, Text, View, Button } from 'react-native';
+import { StyleSheet, Text, View, Button, TouchableOpacity } from 'react-native';
 import AddTagsScreen from './AddTagsScreen';
 import UserDayObj from '../shared/UserDayObj.model';
 
 class TrackerScreen extends React.Component{
-  
+
   constructor(props){
       super(props);
       this.state = {
@@ -35,29 +35,34 @@ class TrackerScreen extends React.Component{
   render(){
     return (
       <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-        <Text>How did you feel today?</Text>
+        <Text style={{fontSize: 24, marginTop: 20}}>How did you feel today?</Text>
         <View style={{ alignItems: 'center', justifyContent: 'center', flexDirection: "row" }}>
-          <Button
-            title="Great"
-            onPress={() => this.setMood(5)}
-          />
-          <Button
-            title="Good"
-            onPress={() => this.setMood(4)}
-          />
-          <Button
-            title="Ok"
-            onPress={() => this.setMood(3)}
-          />
-          <Button
-            title="Been better"
-            onPress={() => this.setMood(2)}
-          />
-          <Button
-            title="Not well"
-            onPress={() => this.setMood(1)}
-          />
+            <AppButton
+                title="😁"
+                onPress={() => this.setMood(5)}
+            />
+            <AppButton
+                title="🙂"
+                onPress={() => this.setMood(4)}
+            />
+            <AppButton
+                title="😐"
+                onPress={() => this.setMood(4)}
+            />
+            <AppButton
+                title="😒"
+                onPress={() => this.setMood(3)}
+            />
+            <AppButton
+                title="😞"
+                onPress={() => this.setMood(2)}
+            />
+            <AppButton
+                title="☹️"
+                onPress={() => this.setMood(1)}
+            />
         </View>
+
         <AddTagsScreen setTags={this.handleCallback}></AddTagsScreen>
 
         <Button
@@ -69,5 +74,22 @@ class TrackerScreen extends React.Component{
       );
     }
   }
+
+const AppButton = ({onPress, title}) => (
+<TouchableOpacity onPress={onPress} style={btnStyles.btn}>
+    <Text style={btnStyles.emoji}>{title}</Text>
+</TouchableOpacity>
+)
+
+const btnStyles  = StyleSheet.create({
+    btn: {
+        marginRight: 8,
+        marginLeft: 8,
+        marginTop: 30,
+        marginBottom: 30,
+        backgroundColor: "transparent",
+    },
+    emoji: { fontSize: 35 }
+});
 
   export default TrackerScreen
