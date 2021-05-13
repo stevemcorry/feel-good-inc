@@ -31,6 +31,8 @@ export default function HomeScreen({ navigation }) {
         <Button
           title="Register For Happiness"
           onPress={() => navigation.navigate('Registration')}
+          title="Add Tags"
+          onPress={() => navigation.navigate('AddTags')}
         />
         <Button
           title="Go to details"
