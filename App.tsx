@@ -2,12 +2,13 @@ import { StatusBar } from 'expo-status-bar';
 import React from 'react';
 import { StyleSheet, Text, View, Button } from 'react-native';
 
-import { NavigationContainer } from '@react-navigation/native';
+import { NavigationContainer, NavigationHelpersContext } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import MainPages from './src/layouts/MainPages';
 import TrackerScreen from './src/pages/TrackerScreen';
 
 import Fire from './environment.config';
+import RegistrationScreen from './src/pages/RegistrationScreen';
 import AddTagsScreen from './src/pages/AddTagsScreen';
 
 
@@ -26,7 +27,7 @@ function logout(){
     console.log('didt log out ',err)
   })
 }
-function getData(){
+function register(){
 
 }
 
@@ -38,6 +39,10 @@ function LoginScreen({ navigation }) {
       <Button
         title="Login"
         onPress={() => login(navigation)}
+      />
+      <Button
+        title="Register"
+        onPress={() => navigation.navigate('Register')}
       />
       <Button
         title="Logout"
@@ -54,6 +59,7 @@ export default function App() {
     <NavigationContainer>
       <Stack.Navigator>
         <Stack.Screen name="Home" component={MainPages} />
+        <Stack.Screen name="Register" component={RegistrationScreen} />
         <Stack.Screen name="Details" component={LoginScreen} />
         <Stack.Screen name="Tracker" component={TrackerScreen} />
         <Stack.Screen name="AddTags" component={AddTagsScreen} />

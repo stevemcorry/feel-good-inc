@@ -29,6 +29,8 @@ export default function HomeScreen({ navigation }) {
       <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
         <Text style={styles.text}>Home Screen</Text>
         <Button
+          title="Register For Happiness"
+          onPress={() => navigation.navigate('Registration')}
           title="Add Tags"
           onPress={() => navigation.navigate('AddTags')}
         />
