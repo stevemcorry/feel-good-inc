@@ -1,6 +1,6 @@
 import React, { useState, Component, useEffect } from 'react';
 import Fire from '../../environment.config';
-import { StyleSheet, Text, View, Button, TextInput, Pressable } from 'react-native';
+import { StyleSheet, Text, View, Button, TextInput, Pressable, SafeAreaView, ScrollView } from 'react-native';
 
 
 
@@ -100,7 +100,7 @@ class AddTagsScreen extends React.Component{
     render() {
 
         return (
-            <View style={{ flex: 1, alignItems: 'center', marginTop: 30}}>
+            <View style={styles.wrapper}>
                 <View style={{ width: "100%", flexDirection: "row", justifyContent: "space-around", alignItems: "center"}}>
                     <Button title="x" onPress={() => this.toggleInput()}/>
                     <Text style={styles.h1}>Add Tags</Text>
@@ -118,7 +118,11 @@ class AddTagsScreen extends React.Component{
                     </View>) :
                     (null)
                 }
-                <Text>{this.state.tags}</Text>
+                <SafeAreaView style={styles.container}>
+                    <ScrollView style={styles.scrollView}>
+                        <Text>{this.state.tags}</Text>
+                    </ScrollView>
+                </SafeAreaView>
             </View>
         );
     }
@@ -127,6 +131,13 @@ class AddTagsScreen extends React.Component{
 export default AddTagsScreen;
 
 const styles = StyleSheet.create({
+    wrapper: { 
+        flex: 1,
+        alignItems: 'center',
+        marginTop: 30, 
+        maxHeight: 300,
+        overflow: 'hidden'
+    },
     h1: {
       fontSize: 24,
     },
@@ -143,7 +154,7 @@ const styles = StyleSheet.create({
     tagView: {
         padding: 20,
         flexDirection: 'row',
-        flexWrap: 'wrap'
+        flexWrap: 'wrap',
     },
     tagPill: {
         textAlign: 'center',
