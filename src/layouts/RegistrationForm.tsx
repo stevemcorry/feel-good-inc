@@ -2,6 +2,9 @@ import React from 'react';
  import { Button, TextInput, View, Text, StyleSheet } from 'react-native';
  import { Formik } from 'formik';
  import * as Yup from 'yup';
+import Fire from '../../environment.config';
+import { User } from '../interfaces/user.interface';
+import { v4 as uuidv4 } from 'uuid';
 
  const formValidationSchema = Yup.object().shape({
   firstName: Yup.string().trim()
@@ -11,11 +14,16 @@ import React from 'react';
     .min(1, 'Must be non-empty value')
     .required('Required'),
   userName: Yup.string().email('Invalid email address').required('Required'),
-  email: Yup.string().email('Invalid email address').required('Required'),
   password: Yup.string().trim()
     .min(1, 'Must be non-empty value')
     .required('Required'),
 })
+
+function submitUser(user: User){
+  console.log(user);
+  const userId = 'ajsdkfla;jsdflka'// Fire.auth().currentUser?.uid;
+  Fire.database().ref(`/users/${userId}/profile`).push(user)
+}
  
  export const RegistrationForm = props => (
    <Formik
@@ -24,10 +32,12 @@ import React from 'react';
       lastName: '',
       userName: '',
       password: '',
-      email: '',
     }}
     validationSchema={formValidationSchema}
-    onSubmit={values => console.log(values)}
+    onSubmit={values => {
+      
+      submitUser(values);
+    }}
    >
      {({ handleChange, handleBlur, handleSubmit, values, errors, touched }) => (
       <View>
@@ -59,13 +69,6 @@ import React from 'react';
           value={values.password}
         />
         <Text style={styles.text}>{ touched.password && errors.password }</Text>
-        <TextInput
-          onChangeText={handleChange('email')}
-          onBlur={handleBlur('email')}
-          value={values.email}
-          placeholder='email address'
-        />
-        <Text style={styles.text}>{ touched.email && errors.email }</Text>
         <Button onPress={handleSubmit} title="Submit" />
       </View>
      )}
