@@ -5,6 +5,7 @@ import { StyleSheet, Text, View, Button } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import MainPages from './src/layouts/MainPages';
+import TrackerScreen from './src/pages/TrackerScreen';
 
 import Fire from './environment.config';
 
@@ -53,6 +54,7 @@ export default function App() {
       <Stack.Navigator>
         <Stack.Screen name="Home" component={MainPages} />
         <Stack.Screen name="Details" component={LoginScreen} />
+        <Stack.Screen name="Tracker" component={TrackerScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   );
