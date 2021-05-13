@@ -15,11 +15,13 @@ class AddTagsScreen extends React.Component{
         text: "",
         tagData: {},
         tags: <Text>Loading..</Text>,
-        activeChildren: []
+        activeChildren: [],
+        showInput: false,
+        toggleText: "New"
     }
+    
 
     componentDidMount() {
-        console.log('loading')
         this.getData();
     }
 
@@ -28,7 +30,6 @@ class AddTagsScreen extends React.Component{
         let ref = Fire.database().ref("/users/" + uid + "/tags");
         ref.on("value", snapshot => {
             const data = snapshot.val();
-            console.log('from use ', data)
             if(data){
                 this.setState({tagData: data});
                 this.showTags(data);
@@ -42,15 +43,11 @@ class AddTagsScreen extends React.Component{
         if(!data){
             data = this.state.tagData;
         }
-        console.log('data', this.state.tagData)
         if(Object.keys(data).length !== 0){
-            console.log('inshow', data)
             let children:Array<any> = [];
             Object.entries(data).forEach(([key, value]) => {
-                console.log(value)
                 children.push(value);
             });
-            console.log(children)
             this.setState({tags: this.getChildren(children)});
         }
     }
@@ -60,6 +57,7 @@ class AddTagsScreen extends React.Component{
         arr.push(key);
         this.setState({activeChildren: arr});
         this.showTags("");
+        this.sendTags(arr);
     }
 
     removeActiveTag(key:any){ 
@@ -67,8 +65,17 @@ class AddTagsScreen extends React.Component{
         if(arr.indexOf(key) != -1){
             arr.splice(arr.indexOf(key), 1);
             this.setState({activeChildren: arr});
+           this.sendTags(arr);
         } 
         this.showTags("");
+    }
+    sendTags(arr){
+        let newArr = Object.values(this.state.tagData);
+        let tags = [];
+        arr.map((val:any)=>{
+            tags.push(newArr[val])
+        })
+        this.props.setTags(tags);
     }
 
     getChildren(data:Array<[]>) {
@@ -80,19 +87,39 @@ class AddTagsScreen extends React.Component{
             }
         })}</View>
     }
+    toggleInput() {
+        this.setState({
+            showInput: !this.state.showInput,
+            toggleText: (this.state.showInput ? "New" : "Cancel")
+        });
+    }
+    changeText(val:any){
+        this.setState({text: val})
+    }
     
     render() {
 
         return (
             <View style={{ flex: 1, alignItems: 'center', marginTop: 30}}>
-            <Text style={styles.h1}>Add Tags</Text>
-            <TextInput style={styles.input}
-                value={this.state.text}
-                placeholder="Tag Name"
-                />
-            <Button title="Save Tag" onPress={() => addTag(this.state.text)}/>
-            <Text>{this.state.tags}</Text>
-        </View>
+                <View style={{ width: "100%", flexDirection: "row", justifyContent: "space-around", alignItems: "center"}}>
+                    <Button title="x" onPress={() => this.toggleInput()}/>
+                    <Text style={styles.h1}>Add Tags</Text>
+                    <Button title={this.state.toggleText} onPress={() => this.toggleInput()}/>
+                </View>
+                {
+                    this.state.showInput ? 
+                    (<View>
+                    <TextInput style={styles.input}
+                        onChangeText={(val)=>{this.changeText(val)}}
+                        value={this.state.text}
+                        placeholder="Tag Name"
+                        />
+                    <Button title="Save Tag" onPress={() => addTag(this.state.text)}/>
+                    </View>) :
+                    (null)
+                }
+                <Text>{this.state.tags}</Text>
+            </View>
         );
     }
 }
@@ -102,7 +129,6 @@ export default AddTagsScreen;
 const styles = StyleSheet.create({
     h1: {
       fontSize: 24,
-      marginBottom: 24
     },
     input: {
         borderColor: 'gray',
