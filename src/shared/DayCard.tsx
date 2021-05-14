@@ -11,7 +11,7 @@ export default function DayCard({ item }) {
                 <Text>
                     Tags: 
                 </Text>
-                {item.tags.map((tag)=><View key={tag} style={styles.tag}><Text style={styles.tagText}>{tag}</Text></View>)}
+                {item.tags.map((tag)=><View key={Math.random()} style={styles.tag}><Text style={styles.tagText}>{tag}</Text></View>)}
             </View>
         </View>
     )

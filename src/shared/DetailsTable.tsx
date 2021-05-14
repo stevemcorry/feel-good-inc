@@ -11,10 +11,11 @@ export default function DetailsTable({ data, navigation }) {
       
             <FlatList
                 data={data}
+                keyExtractor={item => item.date}
                 renderItem={({ item }) => {
                     return (
                         <TouchableOpacity onPress={() => navigation.navigate('DayDetails', {item: item})} >
-                            <DayCard key={item.date} item={item} />
+                            <DayCard item={item} />
                         </TouchableOpacity>
                     )
                 }}

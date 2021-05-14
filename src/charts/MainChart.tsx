@@ -53,6 +53,7 @@ export default function MainChart(props) {
         let days = Fire.database().ref("/users/ajsdkfla;jsdflka/days").orderByChild("date").limitToLast(props.selectedDateRange);
         days.on("value", snapshot => {
             const state = snapshot.val();
+            console.log('mood', state)
             if(state){
                 for (const [key, value] of Object.entries(state)) {
                     dataArr.push(value);
@@ -177,7 +178,7 @@ export default function MainChart(props) {
                     )}
                 </TouchableOpacity>
 
-                {/* <TableData data={data} /> */}
+                <TableData data={data} moodData={moodData} />
 
             </React.Fragment>
             )

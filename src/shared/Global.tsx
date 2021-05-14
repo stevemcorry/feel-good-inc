@@ -59,5 +59,8 @@ export const globalStyles = StyleSheet.create({
     },
     tagText: {
         color: 'white'
-    }
+    },
+    emoji: { 
+        fontSize: 35 
+    },
 })

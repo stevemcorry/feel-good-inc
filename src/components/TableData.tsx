@@ -1,40 +1,19 @@
 import React, { useEffect, useState } from 'react';
 import { Button, FlatList, Text, View, TouchableOpacity } from 'react-native';
+import { globalStyles } from '../shared/Global';
 
-export default function TableData({data}) {
+export default function TableData({data, moodData}) {
 
-    const [tableData, setTableData] = useState(data);
-    const [moodTableData, setMoodTableData] = useState([[],[],[],[],[]]);
-
-    useEffect(() => {
-        console.log('hi')
-        setTableData(data);
-        sortByMood();
-    },[moodTableData])
-
-    function sortByMood() {
-        let moods = [[],[],[],[],[]];
-        for (let table of tableData) {
-            moods[table.mood - 1].push(table)
-        }
-        setMoodTableData(moods);
-        console.log('moods?', moodTableData);
-    }
 
     return (
-        <React.Fragment>
-            <FlatList
-                data={moodTableData}
-                renderItem={({ item, index }) => {
-                    return (
-                        <View key={index}>
-                        <Text>{index + 1}: {item.length}</Text>
-                    </View>
-                    )
-                }}
-                
-            /> 
-        </React.Fragment>
+        <View style={globalStyles.container}>
+            <Text style={globalStyles.titleText}>Mood Frequency over {moodData.length} days</Text>
+            <Text style={globalStyles.emoji}>☹️ -  {moodData.filter(x => x == 1).length} day(s)</Text>
+            <Text style={globalStyles.emoji}>😒 -  {moodData.filter(x => x == 2).length} day(s)</Text>
+            <Text style={globalStyles.emoji}>😐 -  {moodData.filter(x => x == 3).length} day(s)</Text>
+            <Text style={globalStyles.emoji}>🙂 -  {moodData.filter(x => x == 4).length} day(s)</Text>
+            <Text style={globalStyles.emoji}>😁 -  {moodData.filter(x => x == 5).length} day(s)</Text>
+        </View>
         
     )
 }
