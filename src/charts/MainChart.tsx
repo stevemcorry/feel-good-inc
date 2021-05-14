@@ -89,7 +89,9 @@ export default function MainChart(props) {
         <ScrollView style={styles.scrollView}>
 
         { isLoading ? (
-            <Text>Loading...</Text>
+            <View style={globalStyles.container}>
+                <Text>Loading...this should only take a moment</Text>
+            </View>
             ) : (
             <React.Fragment>
                 <Text style={globalStyles.titleText}>Check Your Mood Over Time</Text>

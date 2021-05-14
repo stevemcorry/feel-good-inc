@@ -61,6 +61,6 @@ export const globalStyles = StyleSheet.create({
         color: 'white'
     },
     emoji: { 
-        fontSize: 35 
+        fontSize: 25
     },
 })
