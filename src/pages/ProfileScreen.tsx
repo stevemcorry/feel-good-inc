@@ -1,88 +1,155 @@
 import React from 'react';
-import { StyleSheet, Text, View, Button, Linking } from 'react-native';
+import { StyleSheet, Text, View } from 'react-native';
 
 import * as Permissions from 'expo-permissions';
 import * as Location from 'expo-location';
+import Fire from '../../environment.config';
 
-// import { API_KEY } from '../../environment.config';
+class ProfileScreen extends React.Component {
+  private styles = StyleSheet.create({
+    mainText: {
+        color: 'black',
+        fontSize: 28,
+        fontWeight: 'bold',
+        textDecorationLine: 'underline',
+        marginBottom: 10,
+    },
+    minorText: {
+      color: 'black',
+      fontSize: 24,
+      fontWeight: 'bold',
+      textAlign: 'center',
+    },
+    dataText: {
+      color: 'black',
+      fontSize: 20,
+      textAlign: 'center',
+      marginBottom: 15,
+    },
+  });
 
+  constructor(props){
+    super(props);
+    this.state = {
+        userName: '',
+        firstName: '',
+        lastName: '',
+    }
+  }
 
-function askPerm() {
+componentDidMount() {  
+  this.getUserProfile();
+}
+
+askPerm() {
   Permissions.askAsync(Permissions.NOTIFICATIONS).then((res)=>{
     console.log('asked?', res)
   })
 }
-function getPerm() {
+getPerm() {
   Permissions.getAsync(Permissions.NOTIFICATIONS).then((res)=>{
     if(res.status == "undetermined" ){
       console.log('oops');
-      askPerm();
+      this.askPerm();
     }
   }).catch((err)=>{
     console.log('bad', err)
   })
 }
 
-function askLocation() {
+askLocation() {
   Location.requestForegroundPermissionsAsync().then(res=>{
     console.log('asked', res)
-    getLocationData();
+    this.getLocationData();
   }).catch((err)=>{
     console.log('err', err)
   })
 }
-function getLocation() {
+
+getLocation() {
   Location.getForegroundPermissionsAsync().then((res)=>{
     console.log('granted? ', res)
     if(!res.granted){
-      askLocation();
+      this.askLocation();
     } else{
-      getLocationData();
+      this.getLocationData();
     }
-  })
-  
+  })  
 }
 
-function getLocationData() {
+getLocationData() {
   Location.getCurrentPositionAsync().then(res=>{
     console.log('lat, long', res.coords.latitude, res.coords.longitude);
-    fetchWeather(res.coords.latitude, res.coords.longitude)
+    this.fetchWeather(res.coords.latitude, res.coords.longitude)
   })
 }
 
-function fetchWeather(lat = 25, lon = 25) {
+fetchWeather(lat = 25, lon = 25) {
   let API_KEY = "bd983320b907dc1327135e27f143f442"
   fetch(
     `http://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&APPID=${API_KEY}&units=metric`
   )
     .then(res => res.json())
     .then(json => {
-      getTempAndWeather(json);
+      this.getTempAndWeather(json);
     });
 }
-function getTempAndWeather(json){
+
+getTempAndWeather(json){
   let tempF = (json.main.temp * (9/5)) + 32;
   let weather = json.weather[0].description;
   let city = json.name;
   console.log(tempF, weather, city)
 }
 
-export default function ProfileScreen({ navigation }) {
+setStateMembers(snapshot: any): void {
+  let profiles = [];
+  let userName: string = '';
+  let firstName: string = '';
+  let lastName: string = '';
+  const currentUser: firebase.default.User | null = Fire.auth().currentUser;
+  console.log(snapshot.val());
+    snapshot.forEach(function(data) {
+        profiles.push(data);
+    });
+
+    profiles.forEach(function(profile) {
+      if (profile.child("userName").val() === currentUser?.email) {
+        userName = profile.child("userName").val();
+        firstName = profile.child("firstName").val();
+        lastName = profile.child("lastName").val();
+      }
+    })
+  this.setState({userName, firstName, lastName})
+}
+
+getUserProfile(){
+  let uid = "ajsdkfla;jsdflka";  
+  Fire.database().ref("/users/" + uid + "/profile/").once("value", (snapshot) => this.setStateMembers(snapshot));
+}
+render(){
     return (
       <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-        <Text>This is the profile screen nerds</Text>
-        <Button
-          title="Go to settings"
-          onPress={() => Linking.openURL('app-settings:')}
-        />
-        <Button
+        <Text style={this.styles.mainText}>Current User Profile</Text>
+        <View>
+          <Text style={this.styles.minorText}>First Name: </Text>
+          <Text style={this.styles.dataText}>{this.state.firstName}</Text>
+          <Text style={this.styles.minorText}>Last Name: </Text>
+          <Text style={this.styles.dataText}>{this.state.lastName}</Text>
+          <Text style={this.styles.minorText}>Username: </Text>
+          <Text style={this.styles.dataText}>{this.state.userName}</Text>          
+        </View>
+        {/* <Button
           title="Notification Permissions"
           onPress={() => getPerm()}
         />
         <Button
           title="Location Permissions"
           onPress={() => getLocation()}
-        />
+        /> */}
       </View>
     );
-  }
+  }  
+}
+
+export default ProfileScreen

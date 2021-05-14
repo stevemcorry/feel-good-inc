@@ -49,32 +49,59 @@ function login(userName: string, password: string, navigation: any){
       login(user.userName, user.password, props.navigation);
     }}
     >
-    {({ handleChange, handleBlur, handleSubmit, values, errors, touched }) => (
-    <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-      <View>
-        <TextInput
-          placeholder='email@example.com'
-          onChangeText={handleChange('userName')}
-          onBlur={handleBlur('userName')}
-          value={values.userName}
-        />
-        <Text style={styles.text}>{ touched.userName && errors.userName }</Text>
-        <TextInput
-          placeholder='Password'
-          onChangeText={handleChange('password')}
-          onBlur={handleBlur('password')}
-          value={values.password}
-        />
-        <Text style={styles.text}>{ touched.password && errors.password }</Text>
-        <Button onPress={handleSubmit} title="Submit" />
-      </View>
-    </TouchableWithoutFeedback>
+    {({ handleChange, handleBlur, handleSubmit, values, errors, touched }) => (    
+    <View>
+      <Text style={styles.minorText}>Username: </Text>
+      <TextInput style={styles.input}
+        placeholder='email@example.com'
+        onChangeText={handleChange('userName')}
+        onBlur={handleBlur('userName')}
+        value={values.userName}
+      />
+      <Text style={styles.error}>{ touched.userName && errors.userName }</Text>
+      <Text style={styles.minorText}>Password: </Text>
+      <TextInput style={styles.input}
+        placeholder='Password'
+        onChangeText={handleChange('password')}
+        onBlur={handleBlur('password')}
+        value={values.password}
+      />
+      <Text style={styles.error}>{ touched.password && errors.password }</Text>
+      <Button onPress={handleSubmit} title="Submit" />
+    </View>
     )}
   </Formik>
  );
 
  const styles = StyleSheet.create({
-  text: {
-      color: 'red'
-  }
+  error: {
+      color: 'red',
+      textAlign: 'center',
+      marginBottom: 15,
+      fontSize: 18,
+  },
+  mainText: {
+    color: 'black',
+    fontSize: 28,
+    fontWeight: 'bold',
+    textDecorationLine: 'underline',
+  },
+  minorText: {
+    color: 'black',
+    fontSize: 24,
+    fontWeight: 'bold',
+    textAlign: 'center',
+  },
+  dataText: {
+    color: 'black',
+    fontSize: 20,
+    textAlign: 'center',
+    marginBottom: 15,
+  },
+  input: {
+    height: 40,
+    borderColor: 'black',
+    borderWidth: 1,
+    textAlign: 'center'
+ },
 })

@@ -4,7 +4,6 @@ import React from 'react';
  import * as Yup from 'yup';
 import Fire from '../../environment.config';
 import { User } from '../interfaces/user.interface';
-import { v4 as uuidv4 } from 'uuid';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const storeUserObj = async (value: object) => {
@@ -65,34 +64,38 @@ async function submitUser(user: User, navigation: any){
    >
      {({ handleChange, handleBlur, handleSubmit, values, errors, touched }) => (
       <View>
-        <TextInput
+        <Text style={styles.minorText}>First Name: </Text>
+        <TextInput style={styles.input}
           placeholder='First Name'
           onChangeText={handleChange('firstName')}
           onBlur={handleBlur('firstName')}
           value={values.firstName}
         />
-        <Text style={styles.text}>{ touched.firstName && errors.firstName }</Text>
-        <TextInput
+        <Text style={styles.error}>{ touched.firstName && errors.firstName }</Text>
+        <Text style={styles.minorText}>Last Name: </Text>
+        <TextInput style={styles.input}
           placeholder='Last Name'
           onChangeText={handleChange('lastName')}
           onBlur={handleBlur('lastName')}
           value={values.lastName}
         />
-        <Text style={styles.text}>{ touched.lastName && errors.lastName }</Text>
-        <TextInput
+        <Text style={styles.error}>{ touched.lastName && errors.lastName }</Text>
+        <Text style={styles.minorText}>Username: </Text>
+        <TextInput style={styles.input}
           placeholder='email@example.com'
           onChangeText={handleChange('userName')}
           onBlur={handleBlur('userName')}
           value={values.userName}
         />
-        <Text style={styles.text}>{ touched.userName && errors.userName }</Text>
-        <TextInput
+        <Text style={styles.error}>{ touched.userName && errors.userName }</Text>
+        <Text style={styles.minorText}>Password: </Text>
+        <TextInput style={styles.input}
           placeholder='Password'
           onChangeText={handleChange('password')}
           onBlur={handleBlur('password')}
           value={values.password}
         />
-        <Text style={styles.text}>{ touched.password && errors.password }</Text>
+        <Text style={styles.error}>{ touched.password && errors.password }</Text>
         <Button onPress={handleSubmit} title="Submit" />
       </View>
      )}
@@ -100,7 +103,34 @@ async function submitUser(user: User, navigation: any){
  );
 
  const styles = StyleSheet.create({
-  text: {
-      color: 'red'
-  }
+  error: {
+      color: 'red',
+      textAlign: 'center',
+      fontSize: 18,
+      marginBottom: 15
+  },
+  mainText: {
+    color: 'black',
+    fontSize: 28,
+    fontWeight: 'bold',
+    textDecorationLine: 'underline'
+  },
+  minorText: {
+    color: 'black',
+    fontSize: 24,
+    fontWeight: 'bold',
+    textAlign: 'center',
+  },
+  dataText: {
+    color: 'black',
+    fontSize: 20,
+    textAlign: 'center',
+    marginBottom: 15,
+  },
+  input: {
+    height: 40,
+    borderColor: 'black',
+    borderWidth: 1,
+    textAlign: 'center'
+ },
 })
