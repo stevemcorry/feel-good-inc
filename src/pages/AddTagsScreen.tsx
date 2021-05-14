@@ -4,11 +4,6 @@ import { StyleSheet, Text, View, Button, TextInput, Pressable, SafeAreaView, Scr
 
 
 
-function addTag(tag:string){
-    let uid = "ajsdkfla;jsdflka"
-    let ref = Fire.database().ref("/users/" + uid + "/tags").push(tag)
-}
-
 class AddTagsScreen extends React.Component{
 
     state = {
@@ -77,6 +72,11 @@ class AddTagsScreen extends React.Component{
         })
         this.props.setTags(tags);
     }
+    addTag(tag:string){
+        let uid = "ajsdkfla;jsdflka"
+        Fire.database().ref("/users/" + uid + "/tags").push(tag);
+        this.setState({text: ""});
+    }
 
     getChildren(data:Array<[]>) {
         return <View style={styles.tagView}>{data.map((val, key:any)=>{
@@ -114,13 +114,13 @@ class AddTagsScreen extends React.Component{
                         value={this.state.text}
                         placeholder="Tag Name"
                         />
-                    <Button title="Save Tag" onPress={() => addTag(this.state.text)}/>
+                    <Button title="Save Tag" onPress={() => this.addTag(this.state.text)}/>
                     </View>) :
                     (null)
                 }
                 <SafeAreaView style={styles.container}>
-                    <ScrollView style={styles.scrollView}>
-                        <Text>{this.state.tags}</Text>
+                    <ScrollView>
+                        <Text style={styles.scrollView}>{this.state.tags}</Text>
                     </ScrollView>
                 </SafeAreaView>
             </View>
@@ -169,6 +169,12 @@ const styles = StyleSheet.create({
     },
     activePill: {
         backgroundColor: 'lightblue'
+    },
+    container: {
+        paddingBottom: 10
+    },
+    scrollView: {
+        paddingBottom: 10
     }
   });
   
