@@ -1,23 +1,17 @@
-import React from 'react';
-import { Button, StyleSheet, View, Text } from 'react-native';
-import { FlatList } from 'react-native-gesture-handler';
+import React, { useEffect } from 'react';
+import { Button, StyleSheet, View, Text, FlatList } from 'react-native';
+import DayCard from './DayCard';
 
 
 export default function DetailsTable({ data }) {
+
     return (
         <React.Fragment>
-            <Button title='maybe' onPress={() => console.log('from details table', data)} />
       
             <FlatList
-                  data={data}
-                  renderItem={({ item }) => (
-                    <View style={styles.card}>
-                        <View style={styles.cardContent}>
-                            <Text>{item.mood}</Text>
-                        </View>
-                    </View>
-                  )}
-              />
+                data={data}
+                renderItem={({ item }) => <DayCard key={item.date} item={item} />}
+            />
         </React.Fragment>
     );
 }
