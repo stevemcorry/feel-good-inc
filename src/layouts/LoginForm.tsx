@@ -1,9 +1,21 @@
 import React from 'react';
- import { Button, TextInput, View, Text, StyleSheet, Keyboard, TouchableWithoutFeedback } from 'react-native';
- import { Formik } from 'formik';
- import * as Yup from 'yup';
+import { Button, TextInput, View, Text, StyleSheet, Keyboard, TouchableWithoutFeedback } from 'react-native';
+import { Formik } from 'formik';
+import * as Yup from 'yup';
 import Fire from '../../environment.config';
 import { User } from '../interfaces/user.interface';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
+const storeUserObj = async (value: object) => {
+  try {
+    const jsonObj = JSON.stringify(value);
+    // console.log(jsonObj)
+    await AsyncStorage.setItem('@userObj', jsonObj)
+    // await AsyncStorage.setItem('@userObj', value)
+  } catch (err) {
+    console.log('storeUserObj: %s', err);
+  }
+}
 
  const formValidationSchema = Yup.object().shape({
   userName: Yup.string().email('Invalid email address').required('Required'),
@@ -14,21 +26,23 @@ import { User } from '../interfaces/user.interface';
 
 function login(userName: string, password: string, navigation: any){
   Fire.auth().signInWithEmailAndPassword(userName, password).then((res)=>{
+    // console.log(res.user);
+    storeUserObj(res.user);
     navigation.navigate('Main')
   }).catch((err)=>{
     console.log('nope ',err)
   })
 }
- 
+
  export const LoginForm = props => (
-  
+
   <Formik
     initialValues={{
       userName: '',
       password: '',
     }}
     validationSchema={formValidationSchema}
-    onSubmit={user => {  
+    onSubmit={user => {
       login(user.userName, user.password, props.navigation);
     }}
     >
