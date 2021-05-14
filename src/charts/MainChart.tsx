@@ -25,14 +25,13 @@ export default function MainChart(props) {
     const [isLoading, setIsLoading] = useState(true);
     const [data, setData] = useState([]);
     const [moodData, setMoodData] = useState([]);
-    const [temperatureData, setTemperatureData] = useState([]);
-    const [screenTimeData, setScreenTimeData] = useState([]);
+    // const [temperatureData, setTemperatureData] = useState([]);
+    // const [screenTimeData, setScreenTimeData] = useState([]);
     const [labels, setLabels] = useState([]);
     const [openPicker, setOpenPicker] = useState(false);
     const [openDataPicker, setOpenDataPicker] = useState(false);
     const [openDetails, setOpenDetails] = useState(false);
     const [datasets, setDatasets] = useState([]);
-    const [showMood, setShowMood] = useState(true);
     
 
 
@@ -42,12 +41,12 @@ export default function MainChart(props) {
 
     useEffect(() => {
         updateChart();  
-    }, [props.selectedDateRange, showMood]);
+    }, [props.selectedDateRange]);
 
     function updateChart() {
         let tempMoodData: any = [];
-        let tempTempData: any = [];
-        let tempScreenData: any = [];
+        // let tempTempData: any = [];
+        // let tempScreenData: any = [];
         let tempLabels:any = [];
         let dataArr:any = []
         let chartArr:any = []
@@ -57,26 +56,29 @@ export default function MainChart(props) {
             if(state){
                 for (const [key, value] of Object.entries(state)) {
                     dataArr.push(value);
-                    tempLabels.push(value.date);
+                    tempLabels.push(value.date.substring(0,5));
                     tempMoodData.push(parseInt(value['mood']));
-                    tempTempData.push((parseInt(value['temperature'])/100) * 5);
-                    tempScreenData.push(parseInt(value['screenTime'])/60);
+                    // tempTempData.push((parseInt(value['temperature'])/100) * 5);
+                    // tempScreenData.push(parseInt(value['screenTime'])/60);
                 }
                 setLabels(tempLabels);
                 setMoodData(tempMoodData);
-                setTemperatureData(tempTempData);
-                setScreenTimeData(tempScreenData);
+                // setTemperatureData(tempTempData);
+                // setScreenTimeData(tempScreenData);
                 setIsLoading(false);
                 setDatasets([{
                     data: tempMoodData,
                     color: () => 'red',
-                },{
-                    data: tempTempData,
-                    color: () => 'blue'
-                },{
-                    data: tempScreenData,
-                    color: () => 'green'
-                }])
+                },
+                // {
+                //     data: tempTempData,
+                //     color: () => 'blue'
+                // },
+                // {
+                //     data: tempScreenData,
+                //     color: () => 'green'
+                // }
+                ])
                 setData(dataArr);
             }
         });
@@ -89,26 +91,26 @@ export default function MainChart(props) {
             <Text>Loading...</Text>
             ) : (
             <React.Fragment>
-
+                <Text>Mood Over Time</Text>
                 <LineChart
-                    onDataPointClick={(props) =>
-                        console.log('data point clicked', props)
-                    }
+                    onDataPointClick={(clickInfo) => {
+                        let item = data.filter(obj => obj.date == labels[clickInfo.index])[0]
+                        console.log('item', item);
+                        props.navigation.navigate('DayDetails', {item: item});
+                    }}
                     data={{
                         labels: labels,
                         datasets: datasets
                     }}
                     width={Dimensions.get("window").width} // from react-native
                     height={300}
-                    yAxisLabel=""
-                    yAxisSuffix=""
-                    yAxisInterval={5} // optional, defaults to 1
+                    withInnerLines={false}
                     verticalLabelRotation={45}
                     chartConfig={{
                     backgroundColor: "#e26a00",
                     backgroundGradientFrom: "#fb8c00",
                     backgroundGradientTo: "#ffa726",
-                    decimalPlaces: 2, // optional, defaults to 2dp
+                    decimalPlaces: 0, // optional, defaults to 2dp
                     color: (opacity = 1) => 'white',
                     labelColor: (opacity = 1) => 'white',
                     style: {
@@ -116,17 +118,17 @@ export default function MainChart(props) {
                     },
                     propsForDots: {
                         r: "6",
-                        strokeWidth: "2",
+                        strokeWidth: "3",
                         stroke: "#ffa726"
                     }
                     }}
                     bezier
                     style={{
                     marginVertical: 8,
-                    borderRadius: 16
+                    borderRadius: 6
                     }}
                 />
-                <View style={styles.legend}>
+                {/* <View style={styles.legend}>
                     <TouchableOpacity onPress={() => {
                         setShowMood(!showMood);
                         updateChart()
@@ -134,7 +136,7 @@ export default function MainChart(props) {
                         <Text>Toggle Mood: </Text>
                         <FontAwesome name='square' size={16} color='red'/>
                     </TouchableOpacity>
-                </View>
+                </View> */}
                 {openPicker ? (
                     <Picker
                         enabled={openPicker}
@@ -146,8 +148,8 @@ export default function MainChart(props) {
                         }>
                         <Picker.Item label="Past 7 days" value={7} />
                         <Picker.Item label="Past 14 days" value={14} />
-                        <Picker.Item label="Past 30 days" value={30} />
-                        <Picker.Item label="Past 90 days" value={90} />
+                        {/* <Picker.Item label="Past 30 days" value={30} />
+                        <Picker.Item label="Past 90 days" value={90} /> */}
                     </Picker>
 
                 ) : (

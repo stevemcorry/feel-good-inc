@@ -34,6 +34,7 @@ export default function App() {
       <Stack.Navigator>
         <Stack.Screen name="Login" component={LoginPages} />
         <Stack.Screen name="Home" component={MainPages} options={({navigation}) => ({
+            headerLeft: null,
             headerRight: () => <Button title="Logout" onPress={() => logout(navigation)} />
           })}/>
       </Stack.Navigator>
