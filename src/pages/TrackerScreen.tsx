@@ -43,14 +43,31 @@ class TrackerScreen extends React.Component{
       if(!uid){alert('oops somethings wrong')}
       let ref = Fire.database().ref("/users/" + uid + "/days");
       let self = this;
-      ref.orderByChild('date').limitToLast(1).on("child_added", function(snapshot){
-        var data = snapshot.val();
+      ref.orderByChild('date').get().then((data:any)=>{
+        data = Object.values(data.val())[0];
         console.log(data)
         if(data.date == getFormattedDate(new Date())){
           alert('you already entered data for today.');
           self.setState({dataEntered: true});
         }
-      });
+      })
+      
+      // .on("value", function(snapshot){
+      //   var data = snapshot.val();
+      //   console.log('ordering', data)
+      //   if(data.date == getFormattedDate(new Date())){
+      //     alert('you already entered data for today.');
+      //     self.setState({dataEntered: true});
+      //   }
+      // });
+      // ref.orderByChild('date').limitToLast(1).on("value", function(snapshot){
+      //   var data = snapshot.val();
+      //   console.log('ordering', data)
+      //   if(data.date == getFormattedDate(new Date())){
+      //     alert('you already entered data for today.');
+      //     self.setState({dataEntered: true});
+      //   }
+      // });
       ref.off();
       this.getUserObj();
     })
