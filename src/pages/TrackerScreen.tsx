@@ -7,6 +7,19 @@ import * as Location from 'expo-location';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import UserObj from '../interfaces/userObj.interface';
 
+
+function getFormattedDate(date) {
+  var year = date.getFullYear();
+
+  var month = (1 + date.getMonth()).toString();
+  month = month.length > 1 ? month : '0' + month;
+
+  var day = date.getDate().toString();
+  day = day.length > 1 ? day : '0' + day;
+  
+  return month + '/' + day + '/' + year;
+}
+
 class TrackerScreen extends React.Component{
 
   constructor(props){
@@ -16,12 +29,12 @@ class TrackerScreen extends React.Component{
           mood: 0,
           location: "",
           weather: "",
-          temp: 0
+          temp: 0,
+          dataEntered: false
       }
   }
 
   setMood = (mood: number) => {
-      console.log(mood);
       this.setState({mood})
   }
 
@@ -29,39 +42,36 @@ class TrackerScreen extends React.Component{
     if(this.state.location == ""){
       this.getLocation();
     }
+    let uid = "ajsdkfla;jsdflka";
+    let ref = Fire.database().ref("/users/" + uid + "/Days");
+    let self = this;
+    ref.orderByChild('date').limitToLast(1).on("child_added", function(snapshot){
+      var data = snapshot.val();
+      if(data.date == getFormattedDate(new Date())){
+        alert('you already entered data for today.');
+        self.setState({dataEntered: true});
+      }
+    });
     this.getUserObj();
   }
 
-  getFormattedDate(date) {
-    var year = date.getFullYear();
-
-    var month = (1 + date.getMonth()).toString();
-    month = month.length > 1 ? month : '0' + month;
-
-    var day = date.getDate().toString();
-    day = day.length > 1 ? day : '0' + day;
-
-    return month + '/' + day + '/' + year;
-  }
   sendObj = () => {
     if(this.state.mood == 0){
       alert('Please select how you felt today');
       return;
     }
-    let date = this.getFormattedDate(new Date());
+    let date = getFormattedDate(new Date());
     let usr = new UserDayObj(this.state.mood, this.state.tags, date, this.state.temp, this.state.weather, this.state.location);
     let uid = "ajsdkfla;jsdflka";
-      Fire.database().ref("/users/" + uid + "/Days").push(usr);
+    Fire.database().ref("/users/" + uid + "/Days").push(usr);
   }
 
   handleCallback = (childData) =>{
-    console.log(childData)
     this.setState({tags: childData})
   }
 
   askLocation() {
     Location.requestForegroundPermissionsAsync().then(res=>{
-      console.log('asked', res)
       this.getLocationData();
     }).catch((err)=>{
       console.log('err', err)
@@ -69,7 +79,6 @@ class TrackerScreen extends React.Component{
   }
   getLocation() {
     Location.getForegroundPermissionsAsync().then((res)=>{
-      console.log('granted? ', res)
       if(!res.granted){
         this.askLocation();
       } else{
@@ -97,10 +106,9 @@ class TrackerScreen extends React.Component{
       });
   }
   getTempAndWeather(json){
-    let tempF = (json.main.temp * (9/5)) + 32;
+    let tempF = Math.round((json.main.temp * (9/5)) + 32)
     let weather = json.weather[0].description;
     let city = json.name;
-    console.log(tempF, weather, city)
     this.setState({
       temp: tempF,
       weather: weather,
@@ -112,7 +120,6 @@ class TrackerScreen extends React.Component{
     try {
       // const value = await AsyncStorage.getItem('@userObj')
       const jsonValue: UserObj = await AsyncStorage.getItem('@userObj');
-      console.log(jsonValue);
       return jsonValue != null ? JSON.parse(jsonValue) : null;
     } catch(err) {
       console.log("getUserObj: %s", err);
@@ -155,7 +162,11 @@ class TrackerScreen extends React.Component{
           </TouchableOpacity>
         </View>
 
+        <View style={styles.hr}></View>
+          
         <AddTagsScreen setTags={this.handleCallback} />
+
+        <View style={styles.hr}></View>
 
         <View style={{ flex: 1, marginTop: 0 }}>
           <Text style={{ fontSize: 24, marginTop: 24 }}>Weather Data:</Text>
@@ -168,12 +179,13 @@ class TrackerScreen extends React.Component{
             (<View>
               <Text>Location: {this.state.location}</Text>
               <Text>Weather: {this.state.weather}</Text>
-              <Text>Temp: {this.state.temp}</Text>
+              <Text>Temp: {this.state.temp}°</Text>
             </View>)
           }
           </View>
 
-        <Pressable onPress={()=>{this.sendObj()}} style={[btnStyles.btn, btnStyles.saveBtn]}><Text style={btnStyles.save}>Save Day</Text></Pressable>
+        
+        {this.state.dataEntered ? <Pressable onPress={()=>{this.sendObj()}} style={[btnStyles.btn, btnStyles.saveBtn]}><Text style={btnStyles.save}>Edit Day</Text></Pressable>: <Pressable onPress={()=>{this.sendObj()}} style={[btnStyles.btn, btnStyles.saveBtn]}><Text style={btnStyles.save}>Save Day</Text></Pressable>}
       </View>
     );
     }
@@ -208,6 +220,13 @@ const btnStyles  = StyleSheet.create({
       color: 'white',
       fontSize: 24
     }
+});
+const styles  = StyleSheet.create({
+  hr:{
+    borderTopWidth: 1,
+    borderColor: 'lightgrey',
+    width: '90%'
+  }
 });
 
   export default TrackerScreen
