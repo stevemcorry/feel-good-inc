@@ -63,7 +63,8 @@ function fetchWeather(lat = 25, lon = 25) {
 function getTempAndWeather(json){
   let tempF = (json.main.temp * (9/5)) + 32;
   let weather = json.weather[0].description;
-  console.log(tempF, weather)
+  let city = json.name;
+  console.log(tempF, weather, city)
 }
 
 export default function ProfileScreen({ navigation }) {

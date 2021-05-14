@@ -5,64 +5,37 @@ import { StyleSheet, Text, View, Button } from 'react-native';
 import { NavigationContainer, NavigationHelpersContext } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import MainPages from './src/layouts/MainPages';
-import TrackerScreen from './src/pages/TrackerScreen';
-
+import LoginPages from './src/layouts/LoginPages';
 import Fire from './environment.config';
-import RegistrationScreen from './src/pages/RegistrationScreen';
-import AddTagsScreen from './src/pages/AddTagsScreen';
-
-
-function login(navigation){
-  Fire.auth().signInAnonymously().then((res)=>{
-    console.log(res,'logged in?')
-    navigation.navigate('Home')
-  }).catch((err)=>{
-    console.log('nope ',err)
-  })
-}
-function logout(){
-  Fire.auth().signOut().then((res)=>{
-    console.log(res,'Logged out')
-  }).catch((err)=>{
-    console.log('didt log out ',err)
-  })
-}
-function register(){
-
-}
-
-function LoginScreen({ navigation }) {
-  return (
-    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-
-      <Text>Details Screen</Text>
-      <Button
-        title="Login"
-        onPress={() => login(navigation)}
-      />
-      <Button
-        title="Register"
-        onPress={() => navigation.navigate('Register')}
-      />
-      <Button
-        title="Logout"
-        onPress={() => logout()}
-      />
-    </View>
-  );
-}
+import { useFonts } from "expo-font";
 
 const Stack = createStackNavigator();
 
+function logout(navigation){
+  Fire.auth().signOut().then(()=>{
+    console.log('Logged out');
+    navigation.navigate('Login');
+  }).catch((err)=>{
+    console.log('didn\'t log out ',err);
+  })
+}
+
 export default function App() {
+  const [loaded] = useFonts({
+    Nunito: require("./assets/fonts/Nunito-Regular.ttf"),
+    NunitoLight: require("./assets/fonts/Nunito-Light.ttf"),
+    NunitoBold: require("./assets/fonts/Nunito-SemiBold.ttf"),
+  });
+  if (!loaded) {
+    return null;
+  }
   return (
     <NavigationContainer>
       <Stack.Navigator>
-        <Stack.Screen name="Home" component={MainPages} />
-        <Stack.Screen name="Register" component={RegistrationScreen} />
-        <Stack.Screen name="Details" component={LoginScreen} />
-        <Stack.Screen name="Tracker" component={TrackerScreen} />
-        <Stack.Screen name="AddTags" component={AddTagsScreen} />
+        <Stack.Screen name="Login" component={LoginPages} />
+        <Stack.Screen name="Home" component={MainPages} options={({navigation}) => ({
+            headerRight: () => <Button title="Logout" onPress={() => logout(navigation)} />
+          })}/>
       </Stack.Navigator>
     </NavigationContainer>
   );
@@ -71,8 +44,8 @@ export default function App() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
+    backgroundColor: "#fff",
+    alignItems: "center",
+    justifyContent: "center",
   },
 });

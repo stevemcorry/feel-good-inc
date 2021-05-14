@@ -24,17 +24,23 @@ function setData(){
     let ref = Fire.database().ref("/test/data/"+ uid).set(obj)
 }
 
+function logout(navigation){
+  console.log(navigation);
+  Fire.auth().signOut().then(()=>{
+    navigation.navigate('Login');
+    console.log('Logged out');
+  }).catch((err)=>{
+    console.log('didn\'t log out ',err);
+  })
+}
+
 export default function HomeScreen({ navigation }) {
     return (
       <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
         <Text style={styles.text}>Home Screen</Text>
         <Button
-          title="Register For Happiness"
-          onPress={() => navigation.navigate('Registration')}
-        />
-        <Button
-          title="Go to details"
-          onPress={() => navigation.navigate('Details')}
+          title="Go to charts"
+          onPress={() => navigation.navigate('Charts')}
         />
         <Button
           title="Get data"
