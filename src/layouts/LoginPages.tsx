@@ -7,9 +7,26 @@ const Tab = createBottomTabNavigator();
 
 export default function LoginPages({ navigation }) {
     return (
-      <Tab.Navigator backBehavior='none'>
-        <Tab.Screen name="Login" component={LoginScreen} />
-        <Tab.Screen name="Register" component={RegistrationScreen} />
+      <Tab.Navigator
+        backBehavior="none"
+        tabBarOptions={{
+          labelStyle: {
+            fontSize: 16,
+            fontFamily: "NunitoBold",
+            margin: 15,
+          },
+        }}
+      >
+        <Tab.Screen
+          name="Login"
+          component={LoginScreen}
+          options={{ tabBarLabel: "Login" }}
+        />
+        <Tab.Screen
+          name="Register"
+          component={RegistrationScreen}
+          options={{ tabBarLabel: "Register" }}
+        />
       </Tab.Navigator>
     );
   }
