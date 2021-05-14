@@ -35,7 +35,6 @@ class TrackerScreen extends React.Component{
   }
 
   setMood = (mood: number) => {
-      console.log(mood);
       this.setState({mood})
   }
 
@@ -48,7 +47,6 @@ class TrackerScreen extends React.Component{
     let self = this;
     ref.orderByChild('date').limitToLast(1).on("child_added", function(snapshot){
       var data = snapshot.val();
-      console.log(data);
       if(data.date == getFormattedDate(new Date())){
         alert('you already entered data for today.');
         self.setState({dataEntered: true});
@@ -74,7 +72,6 @@ class TrackerScreen extends React.Component{
 
   askLocation() {
     Location.requestForegroundPermissionsAsync().then(res=>{
-      console.log('asked', res)
       this.getLocationData();
     }).catch((err)=>{
       console.log('err', err)
@@ -82,7 +79,6 @@ class TrackerScreen extends React.Component{
   }
   getLocation() {
     Location.getForegroundPermissionsAsync().then((res)=>{
-      console.log('granted? ', res)
       if(!res.granted){
         this.askLocation();
       } else{
@@ -113,7 +109,6 @@ class TrackerScreen extends React.Component{
     let tempF = Math.round((json.main.temp * (9/5)) + 32)
     let weather = json.weather[0].description;
     let city = json.name;
-    console.log(tempF, weather, city)
     this.setState({
       temp: tempF,
       weather: weather,
@@ -125,7 +120,6 @@ class TrackerScreen extends React.Component{
     try {
       // const value = await AsyncStorage.getItem('@userObj')
       const jsonValue: UserObj = await AsyncStorage.getItem('@userObj');
-      console.log(jsonValue);
       return jsonValue != null ? JSON.parse(jsonValue) : null;
     } catch(err) {
       console.log("getUserObj: %s", err);

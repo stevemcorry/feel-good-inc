@@ -25,12 +25,15 @@ const storeUserObj = async (value: object) => {
 })
 
 function login(userName: string, password: string, navigation: any){
-  Fire.auth().signInWithEmailAndPassword(userName, password).then((res)=>{
-    // console.log(res.user);
-    storeUserObj(res.user);
-    navigation.navigate('Main')
-  }).catch((err)=>{
-    console.log('nope ',err)
+  Fire.auth().setPersistence('local').then(()=>{
+    Fire.auth().signInWithEmailAndPassword(userName, password).then((res)=>{
+      // console.log(res.user);
+      storeUserObj(res.user);
+      navigation.navigate('Main')
+      
+    }).catch((err)=>{
+      console.log('nope ',err)
+    })
   })
 }
 
