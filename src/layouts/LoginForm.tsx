@@ -1,5 +1,5 @@
 import React from 'react';
- import { Button, TextInput, View, Text, StyleSheet } from 'react-native';
+ import { Button, TextInput, View, Text, StyleSheet, Keyboard, TouchableWithoutFeedback } from 'react-native';
  import { Formik } from 'formik';
  import * as Yup from 'yup';
 import Fire from '../../environment.config';
@@ -14,14 +14,15 @@ import { User } from '../interfaces/user.interface';
 
 function login(userName: string, password: string, navigation: any){
   Fire.auth().signInWithEmailAndPassword(userName, password).then((res)=>{
-    navigation.navigate('Home')
+    navigation.navigate('Main')
   }).catch((err)=>{
     console.log('nope ',err)
   })
 }
  
  export const LoginForm = props => (
-   <Formik
+  
+  <Formik
     initialValues={{
       userName: '',
       password: '',
@@ -30,8 +31,9 @@ function login(userName: string, password: string, navigation: any){
     onSubmit={user => {  
       login(user.userName, user.password, props.navigation);
     }}
-   >
-     {({ handleChange, handleBlur, handleSubmit, values, errors, touched }) => (
+    >
+    {({ handleChange, handleBlur, handleSubmit, values, errors, touched }) => (
+    <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
       <View>
         <TextInput
           placeholder='email@example.com'
@@ -49,8 +51,9 @@ function login(userName: string, password: string, navigation: any){
         <Text style={styles.text}>{ touched.password && errors.password }</Text>
         <Button onPress={handleSubmit} title="Submit" />
       </View>
-     )}
-   </Formik>
+    </TouchableWithoutFeedback>
+    )}
+  </Formik>
  );
 
  const styles = StyleSheet.create({

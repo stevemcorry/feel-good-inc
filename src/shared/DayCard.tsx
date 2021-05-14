@@ -22,11 +22,10 @@ const styles = StyleSheet.create({
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
-        marginVertical: 5,
-        marginHorizontal: 25,
+        marginVertical: 6,
         paddingHorizontal: 15,
         paddingVertical: 10,
-        backgroundColor: '#DDD',
+        backgroundColor: '#a9a9a9',
         borderRadius: 10
 
     },
@@ -40,7 +39,7 @@ const styles = StyleSheet.create({
         paddingHorizontal: 7,
         paddingVertical: 2,
         borderRadius: 5,
-        backgroundColor: 'black',
+        backgroundColor: '#222',
     },
     tagText: {
         color: 'white'

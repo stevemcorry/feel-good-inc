@@ -1,6 +1,5 @@
 import React from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import HomeScreen from '../pages/HomeScreen';
 import ProfileScreen from '../pages/ProfileScreen';
 import TrackerScreen from '../pages/TrackerScreen';
 import ChartStackScreen from '../pages/ChartStackScreen';
@@ -19,9 +18,9 @@ export default function MainPages({ navigation }) {
         }}
       >
         <Tab.Screen
-          name="Home"
-          component={HomeScreen}
-          options={{ tabBarLabel: "Home" }}
+          name="Tracker"
+          component={TrackerScreen}
+          options={{ tabBarLabel: "Tracker" }}
         />
         <Tab.Screen
           name="Charts"
@@ -32,12 +31,7 @@ export default function MainPages({ navigation }) {
           name="Profile"
           component={ProfileScreen}
           options={{ tabBarLabel: "Profile" }}
-        />
-        <Tab.Screen
-          name="Tracker"
-          component={TrackerScreen}
-          options={{ tabBarLabel: "Tracker" }}
-        />
+        />        
       </Tab.Navigator>
     );
   }

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 
-import { StyleSheet, Text, View, Button, AppRegistry, processColor, Dimensions } from 'react-native';
+import { StyleSheet, Text, View, Button, AppRegistry, processColor, Dimensions, Pressable, ScrollView } from 'react-native';
 import Fire from '../../environment.config';
 
 import {
@@ -11,13 +11,13 @@ import {
     ContributionGraph,
     StackedBarChart
   } from "react-native-chart-kit";
-import { color, modulo } from 'react-native-reanimated';
-import DetailsTable from '../shared/DetailsTable';
 import { Picker } from '@react-native-picker/picker';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import { FontAwesome } from '@expo/vector-icons';
 
-
+import DetailsTable from '../shared/DetailsTable';
+import {globalStyles} from '../shared/Global'
+import TableData from '../components/TableData';
   
 
 export default function MainChart(props) {
@@ -68,7 +68,7 @@ export default function MainChart(props) {
                 setIsLoading(false);
                 setDatasets([{
                     data: tempMoodData,
-                    color: () => 'red',
+                    color: () => 'blue',
                 },
                 // {
                 //     data: tempTempData,
@@ -85,17 +85,16 @@ export default function MainChart(props) {
     }
 
     return (
-        <View>
+        <ScrollView style={styles.scrollView}>
 
         { isLoading ? (
             <Text>Loading...</Text>
             ) : (
             <React.Fragment>
-                <Text>Mood Over Time</Text>
+                <Text style={globalStyles.titleText}>Check Your Mood Over Time</Text>
                 <LineChart
                     onDataPointClick={(clickInfo) => {
-                        let item = data.filter(obj => obj.date == labels[clickInfo.index])[0]
-                        console.log('item', item);
+                        let item = data.filter(obj => obj.date == labels[clickInfo.index] + '/2021')[0];
                         props.navigation.navigate('DayDetails', {item: item});
                     }}
                     data={{
@@ -117,7 +116,7 @@ export default function MainChart(props) {
                         borderRadius: 16
                     },
                     propsForDots: {
-                        r: "6",
+                        r: "7",
                         strokeWidth: "3",
                         stroke: "#ffa726"
                     }
@@ -125,7 +124,6 @@ export default function MainChart(props) {
                     bezier
                     style={{
                     marginVertical: 8,
-                    borderRadius: 6
                     }}
                 />
                 {/* <View style={styles.legend}>
@@ -153,15 +151,21 @@ export default function MainChart(props) {
                     </Picker>
 
                 ) : (
-                    <Button title="Change Date Range" onPress={() => setOpenPicker(true)}/>
+                    <Pressable onPress={() => setOpenPicker(true)} style={[globalStyles.btn, styles.dateRangeBtn]}><Text style={globalStyles.buttonText}>Change Date Range</Text></Pressable>
+
                 )}
                 <TouchableOpacity onPress={() => setOpenDetails(!openDetails)}>
                     <View style={styles.detailsHeader}>
-                        <Text>Day Details:</Text>
                         {openDetails ? (
-                            <FontAwesome name="arrow-up" size={18} color="#333"/>
+                            <React.Fragment>
+                                <Text style={globalStyles.buttonText}>Day Details</Text>
+                                <FontAwesome name="arrow-down" size={18} color="white"/>
+                            </React.Fragment>
                         ) : (
-                            <FontAwesome name="arrow-down" size={18} color="#333"/>
+                            <React.Fragment>
+                                <Text style={globalStyles.buttonText}>Day Details (click to expand)</Text>
+                                <FontAwesome name="arrow-up" size={18} color="white"/>
+                            </React.Fragment>
                         )}
 
                     </View>
@@ -172,23 +176,36 @@ export default function MainChart(props) {
                         null
                     )}
                 </TouchableOpacity>
+
+                <TableData data={data} />
+
             </React.Fragment>
             )
         }
-        </View>
+        </ScrollView>
     );
 }
 
 const styles = StyleSheet.create({
     detailsHeader: {
         height: 50,
-        backgroundColor: '#DDD',
-        borderRadius: 5,
-        borderWidth: 1,
-        borderColor: 'black',
+        backgroundColor: '#222',
+        color: 'white',
         flexDirection: 'row',
-        justifyContent: 'space-around',
+        justifyContent: 'space-between',
         alignItems: 'center',
-        marginHorizontal: 20
+        paddingHorizontal: 10
+    },
+    dateRangeBtn: {
+        backgroundColor: 'orange',
+        width: '60%',
+        alignSelf: 'center',
+        padding: 5,
+        alignItems: 'center',
+        borderRadius: 6
+    },
+    scrollView: {
+        flex: 1,
+        height: Dimensions.get("window").height
     }
 })

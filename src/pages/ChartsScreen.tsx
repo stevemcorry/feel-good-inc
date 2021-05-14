@@ -42,6 +42,6 @@ export default function ChartsScreen({ navigation }) {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#F5FCFF'
+        backgroundColor: '#f2f2f2'
     }
 });

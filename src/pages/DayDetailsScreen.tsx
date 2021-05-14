@@ -1,5 +1,9 @@
 import React, { useEffect } from 'react';
-import { Text, View, FlatList, Button } from 'react-native';
+import { Text, View, FlatList, Button, Pressable } from 'react-native';
+
+import { FontAwesome } from '@expo/vector-icons';
+
+import { globalStyles } from '../shared/Global';
 
 export default function DayDetailsScreen({navigation, route}) {
 
@@ -11,7 +15,10 @@ export default function DayDetailsScreen({navigation, route}) {
 
     return(
         <View>
-            <Button title='back to chart page' onPress={() => navigation.goBack()}/>
+            <Pressable onPress={() => navigation.goBack()} style={globalStyles.backBtn}>
+                
+                <Text style={globalStyles.backBtn}>Back to Chart</Text>
+                </Pressable>
             <Text>{dayData.date}</Text>
             <Text>{dayData.healthFitness}</Text>
             <Text>{dayData.mood}</Text>

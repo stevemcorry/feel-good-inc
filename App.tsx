@@ -33,9 +33,10 @@ export default function App() {
     <NavigationContainer>
       <Stack.Navigator>
         <Stack.Screen name="Login" component={LoginPages} />
-        <Stack.Screen name="Home" component={MainPages} options={({navigation}) => ({
+        <Stack.Screen name="Main" component={MainPages} options={({navigation}) => ({
             headerLeft: null,
-            headerRight: () => <Button title="Logout" onPress={() => logout(navigation)} />
+            headerRight: () => <Button title="Logout" onPress={() => logout(navigation)} />,
+            title: 'Feel Good Inc'
           })}/>
       </Stack.Navigator>
     </NavigationContainer>

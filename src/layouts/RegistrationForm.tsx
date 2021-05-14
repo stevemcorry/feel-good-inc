@@ -21,7 +21,7 @@ import { v4 as uuidv4 } from 'uuid';
 
 function login(userName: string, password: string, navigation: any){
   Fire.auth().signInWithEmailAndPassword(userName, password).then((res)=>{
-    navigation.navigate('Home')
+    navigation.navigate('Main')
   }).catch((err)=>{
     console.log('nope ',err)
   })
