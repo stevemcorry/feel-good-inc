@@ -104,28 +104,17 @@ getTempAndWeather(json){
 }
 
 async setStateMembers(snapshot: any): void {
-  let profiles = [];
-  let userName: string = '';
-  let firstName: string = '';
-  let lastName: string = '';
-  const userObject: UserObj = JSON.parse(await AsyncStorage.getItem('@userObj'));
-    snapshot.forEach(function(data) {
-        profiles.push(data);
-    });
-
-    profiles.forEach(function(profile) {
-      if (profile.child("userName").val() === userObject?.email) {
-        userName = profile.child("userName").val();
-        firstName = profile.child("firstName").val();
-        lastName = profile.child("lastName").val();
-      }
-    })
+  let userName: string = snapshot.userName;
+  let firstName: string = snapshot.firstName;
+  let lastName: string = snapshot.lastName;
   this.setState({userName, firstName, lastName})
 }
 
 async getUserProfile(){
-  let uid = "ajsdkfla;jsdflka";  
-  Fire.database().ref("/users/" + uid + "/profile/").once("value", (snapshot) => this.setStateMembers(snapshot));
+  AsyncStorage.getItem('@userObj').then((res:any)=>{
+    let uid = JSON.parse(res).uid;
+    Fire.database().ref("/users/" + uid + "/profile/").on("value", (snapshot) => this.setStateMembers(snapshot.val()));
+  })
 }
 render(){
     return (

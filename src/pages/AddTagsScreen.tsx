@@ -2,6 +2,7 @@ import React, { useState, Component, useEffect } from 'react';
 import Fire from '../../environment.config';
 import { StyleSheet, Text, View, Button, TextInput, Pressable, SafeAreaView, ScrollView } from 'react-native';
 
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import { AntDesign } from '@expo/vector-icons'; 
 
@@ -22,18 +23,26 @@ class AddTagsScreen extends React.Component{
         this.getData();
     }
 
+    async getUserUid(){
+        return AsyncStorage.getItem('@userObj').then((res:any)=>{
+          return JSON.parse(res).uid;
+        })
+    }
     getData(){
-        let uid = "ajsdkfla;jsdflka"
-        let ref = Fire.database().ref("/users/" + uid + "/tags");
-        ref.on("value", snapshot => {
-            const data = snapshot.val();
-            if(data){
-                this.setState({tagData: data});
-                this.showTags(data);
-            } else {
-                console.log('No data');
-            }
-        });
+        // let uid = "ajsdkfla;jsdflka"
+        this.getUserUid().then((uid)=>{
+            let ref = Fire.database().ref("/users/" + uid + "/tags");
+            ref.on("value", snapshot => {
+                const data = snapshot.val();
+                if(data){
+                    this.setState({tagData: data});
+                    this.showTags(data);
+                } else {
+                    console.log('No data');
+                    this.setState({tags: <Text>No tags Created.</Text>});
+                }
+            });
+        })
     }
 
     showTags(data:any){
@@ -75,13 +84,17 @@ class AddTagsScreen extends React.Component{
         this.props.setTags(tags);
     }
     addTag(tag:string){
-        let uid = "ajsdkfla;jsdflka"
-        Fire.database().ref("/users/" + uid + "/tags").push(tag);
-        this.setState({text: ""});
+        // let uid = "ajsdkfla;jsdflka"
+        this.getUserUid().then((uid)=>{
+            Fire.database().ref("/users/" + uid + "/tags").push(tag);
+            this.setState({text: ""});
+        })
     }
     deleteTag(key:any){
-        let uid = "ajsdkfla;jsdflka"
-        Fire.database().ref("/users/" + uid + "/tags/" + Object.keys(this.state.tagData)[key]).remove();
+        // let uid = "ajsdkfla;jsdflka"
+        this.getUserUid().then((uid)=>{
+            Fire.database().ref("/users/" + uid + "/tags/" + Object.keys(this.state.tagData)[key]).remove();
+        })
     }
 
     getChildren(data:Array<[]>) {

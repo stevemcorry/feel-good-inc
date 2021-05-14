@@ -34,25 +34,37 @@ class TrackerScreen extends React.Component{
       }
   }
 
-  setMood = (mood: number) => {
-      this.setState({mood})
-  }
-
   componentDidMount() {
     if(this.state.location == ""){
       this.getLocation();
     }
-    let uid = "ajsdkfla;jsdflka";
-    let ref = Fire.database().ref("/users/" + uid + "/Days");
-    let self = this;
-    ref.orderByChild('date').limitToLast(1).on("child_added", function(snapshot){
-      var data = snapshot.val();
-      if(data.date == getFormattedDate(new Date())){
-        alert('you already entered data for today.');
-        self.setState({dataEntered: true});
-      }
-    });
-    this.getUserObj();
+    // let uid = "ajsdkfla;jsdflka";
+    this.getUserUid().then((uid)=>{
+      if(!uid){alert('oops somethings wrong')}
+      let ref = Fire.database().ref("/users/" + uid + "/days");
+      let self = this;
+      ref.orderByChild('date').limitToLast(1).on("child_added", function(snapshot){
+        var data = snapshot.val();
+        console.log(data)
+        if(data.date == getFormattedDate(new Date())){
+          alert('you already entered data for today.');
+          self.setState({dataEntered: true});
+        }
+      });
+      ref.off();
+      this.getUserObj();
+    })
+  }
+  async getUserUid(){
+      return AsyncStorage.getItem('@userObj').then((res:any)=>{
+        return JSON.parse(res).uid;
+      }).catch(()=>{
+        return false;
+      })
+  }
+
+  setMood = (mood: number) => {
+      this.setState({mood})
   }
 
   sendObj = () => {
@@ -62,8 +74,21 @@ class TrackerScreen extends React.Component{
     }
     let date = getFormattedDate(new Date());
     let usr = new UserDayObj(this.state.mood, this.state.tags, date, this.state.temp, this.state.weather, this.state.location);
-    let uid = "ajsdkfla;jsdflka";
-    Fire.database().ref("/users/" + uid + "/Days").push(usr);
+
+    // let uid = "ajsdkfla;jsdflka";
+    this.getUserUid().then((uid)=>{
+      Fire.database().ref("/users/" + uid + "/days").push(usr).then(res=>{
+        alert('Day Saved!');
+        this.setState({
+          tags: null,
+          mood: 0,
+          location: "",
+          weather: "",
+          temp: 0,
+          dataEntered: false
+        })
+      })
+    })
   }
 
   handleCallback = (childData) =>{
