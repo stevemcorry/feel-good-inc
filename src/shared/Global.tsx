@@ -43,5 +43,21 @@ export const globalStyles = StyleSheet.create({
     },
     whiteText: {
         color: 'white'
+    },
+    tags: {
+        flexDirection: 'row',
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    tag: {
+        margin: 5,
+        paddingHorizontal: 7,
+        paddingVertical: 2,
+        borderRadius: 5,
+        backgroundColor: '#222',
+        color: 'white'
+    },
+    tagText: {
+        color: 'white'
     }
 })

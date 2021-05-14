@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { Text, View, FlatList, Button, Pressable } from 'react-native';
+import { Text, View, FlatList, Button, Pressable, StyleSheet } from 'react-native';
 
 import { FontAwesome } from '@expo/vector-icons';
 
@@ -7,34 +7,50 @@ import { globalStyles } from '../shared/Global';
 
 export default function DayDetailsScreen({navigation, route}) {
 
-    const dayData = route.params.item;
-
-    useEffect(() => {
-        console.log(dayData);
-    }, [])
+    const dayData = route.params.item; 
 
     return(
-        <View>
-            <Pressable onPress={() => navigation.goBack()} style={globalStyles.backBtn}>
+        <View style={[globalStyles.container, styles.dayDetailsContainer]}>
+            <Button onPress={() => navigation.goBack()} title='Back to Chart' />
+            <View style={styles.dayDetailsContent}>
+                <Text>Date: {dayData.date}</Text>
+                <Text>Health/Fitness: {dayData.healthFitness}</Text>
+                <Text>Mood: {dayData.mood}</Text>
+                <Text>Precipitation: {dayData.precipitation}</Text>
+                <Text>Screen Time: {dayData.screenTime} minutes</Text>
+                <Text>Temperature: {dayData.temperature} degrees Fahrenheit</Text>
+                <View style={globalStyles.tags}>
+                    <Text>
+                        Tags: 
+                    </Text>
+                    <FlatList
+                        data={dayData.tags}
+                        renderItem={({item}) => {
+                            return (
+                                <Text style={globalStyles.tag}>{item}</Text>
+                            )
+                        }}
+                        
+                    />
+                </View>
                 
-                <Text style={globalStyles.backBtn}>Back to Chart</Text>
-                </Pressable>
-            <Text>{dayData.date}</Text>
-            <Text>{dayData.healthFitness}</Text>
-            <Text>{dayData.mood}</Text>
-            <Text>{dayData.precipitation}</Text>
-            <Text>{dayData.screenTime}</Text>
-            <Text>{dayData.temperature}</Text>
-            <FlatList
-                data={dayData.tags}
-                renderItem={({item}) => {
-                    return (
-                        <Text>{item}</Text>
-                    )
-                }}
-                
-            />
+            </View>
         </View>
     )
 
 }
+
+const styles = StyleSheet.create({
+    dayDetailsContainer: {
+        flex: 1,
+        alignItems: 'center'
+    },
+    dayDetailsContent: {
+        width: '100%',
+        margin: 20,
+        padding: 15,
+        backgroundColor: '#D3D3D3',
+        justifyContent: 'center',
+        alignItems: 'center'
+    }
+})

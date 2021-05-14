@@ -177,7 +177,7 @@ export default function MainChart(props) {
                     )}
                 </TouchableOpacity>
 
-                <TableData data={data} />
+                {/* <TableData data={data} /> */}
 
             </React.Fragment>
             )
