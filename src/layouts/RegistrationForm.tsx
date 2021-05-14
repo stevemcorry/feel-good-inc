@@ -4,6 +4,18 @@ import React from 'react';
  import * as Yup from 'yup';
 import Fire from '../../environment.config';
 import { User } from '../interfaces/user.interface';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
+const storeUserObj = async (value: object) => {
+  try {
+    const jsonObj = JSON.stringify(value);
+    // console.log(jsonObj)
+    await AsyncStorage.setItem('@userObj', jsonObj)
+    // await AsyncStorage.setItem('@userObj', value)
+  } catch (err) {
+    console.log('storeUserObj: %s', err);
+  }
+}
 
  const formValidationSchema = Yup.object().shape({
   firstName: Yup.string().trim()
@@ -20,6 +32,7 @@ import { User } from '../interfaces/user.interface';
 
 function login(userName: string, password: string, navigation: any){
   Fire.auth().signInWithEmailAndPassword(userName, password).then((res)=>{
+    storeUserObj(res.user);
     navigation.navigate('Main')
   }).catch((err)=>{
     console.log('nope ',err)
@@ -35,7 +48,7 @@ async function submitUser(user: User, navigation: any){
     console.log('couldn\'t do it',err)
   })
 }
- 
+
  export const RegistrationForm = props => (
    <Formik
     initialValues={{
@@ -45,7 +58,7 @@ async function submitUser(user: User, navigation: any){
       password: '',
     }}
     validationSchema={formValidationSchema}
-    onSubmit={values => {      
+    onSubmit={values => {
       submitUser(values, props.navigation);
     }}
    >
