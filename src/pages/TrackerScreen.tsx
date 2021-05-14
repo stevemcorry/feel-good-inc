@@ -4,6 +4,8 @@ import { StyleSheet, Text, View, Button, TouchableOpacity, Pressable } from 'rea
 import AddTagsScreen from './AddTagsScreen';
 import UserDayObj from '../shared/UserDayObj.model';
 import * as Location from 'expo-location';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import UserObj from '../interfaces/userObj.interface';
 
 
 function getFormattedDate(date) {
@@ -52,9 +54,9 @@ class TrackerScreen extends React.Component{
         self.setState({dataEntered: true});
       }
     });
+    this.getUserObj();
   }
 
-  
   sendObj = () => {
     if(this.state.mood == 0){
       alert('Please select how you felt today');
@@ -87,7 +89,7 @@ class TrackerScreen extends React.Component{
         this.getLocationData();
       }
     })
-    
+
   }
 
   getLocationData() {
@@ -113,10 +115,21 @@ class TrackerScreen extends React.Component{
     let city = json.name;
     console.log(tempF, weather, city)
     this.setState({
-      temp: tempF, 
-      weather: weather, 
+      temp: tempF,
+      weather: weather,
       location: city
     })
+  }
+
+  async getUserObj() {
+    try {
+      // const value = await AsyncStorage.getItem('@userObj')
+      const jsonValue: UserObj = await AsyncStorage.getItem('@userObj');
+      console.log(jsonValue);
+      return jsonValue != null ? JSON.parse(jsonValue) : null;
+    } catch(err) {
+      console.log("getUserObj: %s", err);
+    }
   }
 
   render(){
@@ -124,7 +137,7 @@ class TrackerScreen extends React.Component{
       <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}
       >
         <Text style={{ fontSize: 24, marginTop: 20 }}>
-          How did you feel today?
+          How did you feel today, { this.state.user }?
         </Text>
         <View
           style={{
@@ -133,23 +146,23 @@ class TrackerScreen extends React.Component{
             flexDirection: "row",
           }}
         >
-          <TouchableOpacity onPress={() => this.setMood(5)} 
+          <TouchableOpacity onPress={() => this.setMood(5)}
             style={[btnStyles.btn, this.state.mood == 5 ? btnStyles.activeBtn : null ]}>
             <Text style={btnStyles.emoji}>😁</Text>
           </TouchableOpacity>
-          <TouchableOpacity onPress={() => this.setMood(4)} 
+          <TouchableOpacity onPress={() => this.setMood(4)}
             style={[btnStyles.btn, this.state.mood == 4 ? btnStyles.activeBtn : null ]}>
             <Text style={btnStyles.emoji}>🙂</Text>
           </TouchableOpacity>
-          <TouchableOpacity onPress={() => this.setMood(3)} 
+          <TouchableOpacity onPress={() => this.setMood(3)}
             style={[btnStyles.btn, this.state.mood == 3 ? btnStyles.activeBtn : null ]}>
             <Text style={btnStyles.emoji}>😐</Text>
           </TouchableOpacity>
-          <TouchableOpacity onPress={() => this.setMood(2)} 
+          <TouchableOpacity onPress={() => this.setMood(2)}
             style={[btnStyles.btn, this.state.mood == 2 ? btnStyles.activeBtn : null ]}>
             <Text style={btnStyles.emoji}>😒</Text>
           </TouchableOpacity>
-          <TouchableOpacity onPress={() => this.setMood(1)} 
+          <TouchableOpacity onPress={() => this.setMood(1)}
             style={[btnStyles.btn, this.state.mood == 1 ? btnStyles.activeBtn : null ]}>
             <Text style={btnStyles.emoji}>☹️</Text>
           </TouchableOpacity>

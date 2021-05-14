@@ -8,12 +8,23 @@ import MainPages from './src/layouts/MainPages';
 import LoginPages from './src/layouts/LoginPages';
 import Fire from './environment.config';
 import { useFonts } from "expo-font";
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const Stack = createStackNavigator();
+
+const removeData = async () => {
+  try {
+    await AsyncStorage.removeItem('@userObj')
+  } catch(e) {
+    // remove error
+  }
+  console.log('Done.')
+}
 
 function logout(navigation){
   Fire.auth().signOut().then(()=>{
     console.log('Logged out');
+    // removeData();
     navigation.navigate('Login');
   }).catch((err)=>{
     console.log('didn\'t log out ',err);
