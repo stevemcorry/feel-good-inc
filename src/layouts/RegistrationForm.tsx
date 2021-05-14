@@ -9,7 +9,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 const storeUserObj = async (value: object) => {
   try {
     const jsonObj = JSON.stringify(value);
-    // console.log(jsonObj)
+    console.log(jsonObj)
     await AsyncStorage.setItem('@userObj', jsonObj)
     // await AsyncStorage.setItem('@userObj', value)
   } catch (err) {
@@ -40,12 +40,16 @@ function login(userName: string, password: string, navigation: any){
 }
 
 async function submitUser(user: User, navigation: any){
-  const userId = 'ajsdkfla;jsdflka'// Fire.auth().currentUser?.uid;
-  const newUserId = await Fire.auth().createUserWithEmailAndPassword(user.userName, user.password);
-  Fire.database().ref(`/users/${userId}/profile`).push(user).then((res)=> {
-    login(user.userName, user.password, navigation);
-  }).catch((err)=>{
-    console.log('couldn\'t do it',err)
+  // const userId = 'ajsdkfla;jsdflka'// Fire.auth().currentUser?.uid;
+  Fire.auth().createUserWithEmailAndPassword(user.userName, user.password).then(res=>{
+    if(res){
+      console.log(res.user.uid)
+      Fire.database().ref(`/users/${res.user.uid}/profile`).set(user).then((res)=> {
+        login(user.userName, user.password, navigation);
+      }).catch((err)=>{
+        console.log('couldn\'t do it',err)
+      })
+    }
   })
 }
 
