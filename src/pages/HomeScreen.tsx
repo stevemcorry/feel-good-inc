@@ -35,14 +35,6 @@ function logout(navigation){
 }
 
 export default function HomeScreen({ navigation }) {
-  // React.useLayoutEffect(() => {
-  //   navigation.setOptions({
-  //     headerRight: () => (
-  //       <Button onPress={() => logout(navigation)} title="Logout" />
-  //     ),
-  //   });
-  // }, [navigation]);
-
     return (
       <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
         <Text style={styles.text}>Home Screen</Text>
