@@ -1,9 +1,10 @@
 import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
-
 import * as Permissions from 'expo-permissions';
 import * as Location from 'expo-location';
 import Fire from '../../environment.config';
+import { UserObj } from '../interfaces/userObj.interface';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 class ProfileScreen extends React.Component {
   private styles = StyleSheet.create({
@@ -102,19 +103,18 @@ getTempAndWeather(json){
   console.log(tempF, weather, city)
 }
 
-setStateMembers(snapshot: any): void {
+async setStateMembers(snapshot: any): void {
   let profiles = [];
   let userName: string = '';
   let firstName: string = '';
   let lastName: string = '';
-  const currentUser: firebase.default.User | null = Fire.auth().currentUser;
-  console.log(snapshot.val());
+  const userObject: UserObj = JSON.parse(await AsyncStorage.getItem('@userObj'));
     snapshot.forEach(function(data) {
         profiles.push(data);
     });
 
     profiles.forEach(function(profile) {
-      if (profile.child("userName").val() === currentUser?.email) {
+      if (profile.child("userName").val() === userObject?.email) {
         userName = profile.child("userName").val();
         firstName = profile.child("firstName").val();
         lastName = profile.child("lastName").val();
@@ -123,7 +123,7 @@ setStateMembers(snapshot: any): void {
   this.setState({userName, firstName, lastName})
 }
 
-getUserProfile(){
+async getUserProfile(){
   let uid = "ajsdkfla;jsdflka";  
   Fire.database().ref("/users/" + uid + "/profile/").once("value", (snapshot) => this.setStateMembers(snapshot));
 }
