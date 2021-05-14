@@ -3,6 +3,7 @@ import Fire from '../../environment.config';
 import { StyleSheet, Text, View, Button, TextInput, Pressable, SafeAreaView, ScrollView } from 'react-native';
 
 
+import { AntDesign } from '@expo/vector-icons'; 
 
 class AddTagsScreen extends React.Component{
 
@@ -12,6 +13,7 @@ class AddTagsScreen extends React.Component{
         tags: <Text>Loading..</Text>,
         activeChildren: [],
         showInput: false,
+        showDelete: false,
         toggleText: "New"
     }
     
@@ -77,21 +79,43 @@ class AddTagsScreen extends React.Component{
         Fire.database().ref("/users/" + uid + "/tags").push(tag);
         this.setState({text: ""});
     }
+    deleteTag(key:any){
+        let uid = "ajsdkfla;jsdflka"
+        Fire.database().ref("/users/" + uid + "/tags/" + Object.keys(this.state.tagData)[key]).remove();
+    }
 
     getChildren(data:Array<[]>) {
-        return <View style={styles.tagView}>{data.map((val, key:any)=>{
-            if(this.state.activeChildren.indexOf(key) != -1){
-                return <Pressable key={key} onPress={()=>{this.removeActiveTag(key)}} style={[styles.tagPill, styles.activePill]}><Text>{val}</Text></Pressable>
-            } else{   
-                return <Pressable key={key} onPress={()=>{this.addActiveTag(key)}} style={styles.tagPill}><Text>{val}</Text></Pressable>
-            }
-        })}</View>
+         if(!this.state.showDelete){
+            return <View style={styles.tagView}>{data.map((val, key:any)=>{
+                if(this.state.activeChildren.indexOf(key) != -1){
+                    return <Pressable key={key} onPress={()=>{this.removeActiveTag(key)}} style={[styles.tagPill, styles.activePill]}><Text>{val}</Text></Pressable>
+                } else{   
+                    return <Pressable key={key} onPress={()=>{this.addActiveTag(key)}} style={styles.tagPill}><Text>{val}</Text></Pressable>
+                }
+            })}</View>
+        } else{
+            return <View style={styles.tagView}>{data.map((val, key:any)=>{  
+                return <Pressable key={key} onPress={()=>{this.deleteTag(key)}} style={[styles.tagPill, styles.deletePill]}><AntDesign name="close" size={9} color="#333"/><Text>{val}</Text></Pressable>
+            })}</View>
+        }
     }
     toggleInput() {
         this.setState({
             showInput: !this.state.showInput,
             toggleText: (this.state.showInput ? "New" : "Cancel")
         });
+    }
+    toggleDelete() {
+        this.setState({showDelete: true});
+        setTimeout(()=>{
+            this.showTags("");
+        },20)
+    }
+    deleteOff() {
+        this.setState({showDelete: false});
+        setTimeout(()=>{
+            this.showTags("");
+        },20)
     }
     changeText(val:any){
         this.setState({text: val})
@@ -102,19 +126,20 @@ class AddTagsScreen extends React.Component{
         return (
             <View style={styles.wrapper}>
                 <View style={{ width: "100%", flexDirection: "row", justifyContent: "space-around", alignItems: "center"}}>
-                    <Button title="x" onPress={() => this.toggleInput()}/>
+                    {!this.state.showDelete ? <AntDesign name="delete" onPress={() => this.toggleDelete()} size={25} color="#333"/> : <AntDesign name="close" onPress={() => this.deleteOff()} size={25} color="#333"/>}
+                    
                     <Text style={styles.h1}>Add Tags</Text>
-                    <Button title={this.state.toggleText} onPress={() => this.toggleInput()}/>
+                    {!this.state.showInput ? <AntDesign name="plussquareo" onPress={() => this.toggleInput()} size={25} color="#333"/> : <AntDesign name="close" onPress={() => this.toggleInput()} size={25} color="#333"/>}
                 </View>
                 {
                     this.state.showInput ? 
-                    (<View>
-                    <TextInput style={styles.input}
-                        onChangeText={(val)=>{this.changeText(val)}}
-                        value={this.state.text}
-                        placeholder="Tag Name"
-                        />
-                    <Button title="Save Tag" onPress={() => this.addTag(this.state.text)}/>
+                    (<View style={styles.addTag}>
+                        <TextInput style={styles.input}
+                            onChangeText={(val)=>{this.changeText(val)}}
+                            value={this.state.text}
+                            placeholder="Tag Name"
+                            />
+                        <Button title="Save Tag" onPress={() => this.addTag(this.state.text)}/>
                     </View>) :
                     (null)
                 }
@@ -136,7 +161,8 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         marginTop: 30, 
         maxHeight: 300,
-        overflow: 'hidden'
+        overflow: 'hidden',
+        width: '100%'
     },
     h1: {
       fontSize: 24,
@@ -167,8 +193,20 @@ const styles = StyleSheet.create({
         paddingLeft: 8,
         paddingRight: 8,
     },
+    deletePill: {
+        flexDirection: 'row',
+        backgroundColor: '#ff4d4d',
+        borderColor: '#ff4d4d'
+    },
     activePill: {
         backgroundColor: 'lightblue'
+    },
+    addTag: {
+        width: "100%", 
+        flexDirection: "row", 
+        justifyContent: "center", 
+        alignItems: "center",
+        marginTop: 20
     },
     container: {
         paddingBottom: 10
